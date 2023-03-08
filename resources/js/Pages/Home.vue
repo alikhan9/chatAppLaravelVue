@@ -2,6 +2,7 @@
 import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { onMounted } from "vue";
+import { Link } from "@inertiajs/vue3";
 
 let props = defineProps({
     users: Array,
@@ -32,7 +33,10 @@ onMounted(() => {
                     </div>
                     <!-- end search compt -->
                     <!-- user list -->
-                    <div
+                    <Link
+                        :href="route('home', { friend_id: friend.id })"
+                        v-for="(friend, index) in friends"
+                        :key="index"
                         class="flex flex-row py-4 px-2 justify-center items-center border-b-2"
                     >
                         <div class="w-1/4">
@@ -43,12 +47,14 @@ onMounted(() => {
                             />
                         </div>
                         <div class="w-full">
-                            <div class="text-lg font-semibold">Luis1994</div>
+                            <div class="text-lg font-semibold">
+                                {{ friend.name }}
+                            </div>
                             <span class="text-gray-500"
                                 >Pick me at 9:00 Am</span
                             >
                         </div>
-                    </div>
+                    </Link>
 
                     <!-- end user list -->
                 </div>
