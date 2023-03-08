@@ -1,5 +1,10 @@
 <script setup>
 import Menu from "@/Pages/Menu.vue";
+
+defineProps({
+    showMenu: Boolean,
+    search: String,
+});
 </script>
 
 <template>
@@ -11,7 +16,7 @@ import Menu from "@/Pages/Menu.vue";
                     <slot name="header" />
                 </div>
             </header>
-            <Menu />
+            <Menu v-if="showMenu" :search="search" />
 
             <!-- Page Content -->
             <main>

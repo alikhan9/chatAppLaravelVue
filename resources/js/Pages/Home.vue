@@ -1,17 +1,23 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { onMounted } from "vue";
 
-defineProps({
+let props = defineProps({
     users: Array,
+    friends: Array,
+});
+
+onMounted(() => {
+    console.log(props.friends);
 });
 </script>
 
 <template>
     <Head title="Home" />
 
-    <AuthenticatedLayout>
-        <div v-if="!users" class="h-screen shadow-lg rounded-lg">
+    <AuthenticatedLayout showMenu>
+        <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
             <!-- Chatting -->
             <div class="flex flex-row justify-between bg-white h-full">
                 <!-- chat list -->

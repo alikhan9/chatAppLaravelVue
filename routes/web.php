@@ -1,24 +1,21 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Models\User;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render(
-        'Home'
+        'Home',
+        [
+            'friends' => auth()->user()->friends
+        ]
     );
 })->middleware(['auth', 'verified'])->name('home');
 
-Route::get('/search', function () {
-    return Inertia::render(
-        'Search',
-        [
-        'users' => User::all()->where('name', 'like', '%'. request()->filter . '%')
-    ]
-    );
-});
+Route::get('/search', [UserController::class, 'search']);
+Route::post('/addFriend', [UserController::class, 'addFriend']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
