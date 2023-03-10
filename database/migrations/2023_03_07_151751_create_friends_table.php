@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('friend_id')->constrained('users');
-            $table->boolean('accepted')->default(false);
+            $table->boolean('accepted')->default(0);
             $table->unique(['user_id','friend_id']);
             $table->timestamps();
         });

@@ -50,39 +50,39 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
         ->withPivot('accepted')
-        ->withTimestamps()
-        ->select('id', 'name', 'email');
+        ->withTimestamps();
     }
 
     public function friendsFrom()
     {
         return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
         ->withPivot('accepted')
-        ->withTimestamps()
-        ->select('id', 'name', 'email');
+        ->withTimestamps();
     }
 
     public function pendingFriendsTo()
     {
-        return $this->friendsTo()->withPivot('accepted', false);
+        return $this->friendsTo()->wherePivot('accepted', 0);
     }
 
     public function acceptedFriendsTo()
     {
-        return $this->friendsTo()->withPivot('accepted', true);
+        return $this->friendsTo()->wherePivot('accepted', 1);
     }
 
     public function pendingFriendsFrom()
     {
-        return $this->friendsFrom()->withPivot('accepted', false);
+        return $this->friendsFrom()->wherePivot('accepted', 0);
     }
     public function acceptedFriendsFrom()
     {
-        return $this->friendsFrom()->withPivot('accepted', true);
+        return $this->friendsFrom()->wherePivot('accepted', 1);
     }
 
     public function friends()
     {
-        return $this->mergedRelationWithModel(User::class, 'friends_view')->select('id', 'name', 'email');
+        return $this
+        ->mergedRelationWithModel(User::class, 'friends_view')
+        ->select('id', 'name', 'email');
     }
 }
