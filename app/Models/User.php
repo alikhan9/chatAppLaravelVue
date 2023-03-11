@@ -65,15 +65,16 @@ class User extends Authenticatable
         return $this->friendsTo()->wherePivot('accepted', 0);
     }
 
+    public function pendingFriendsFrom()
+    {
+        return $this->friendsFrom()->wherePivot('accepted', 0);
+    }
+
     public function acceptedFriendsTo()
     {
         return $this->friendsTo()->wherePivot('accepted', 1);
     }
 
-    public function pendingFriendsFrom()
-    {
-        return $this->friendsFrom()->wherePivot('accepted', 0);
-    }
     public function acceptedFriendsFrom()
     {
         return $this->friendsFrom()->wherePivot('accepted', 1);

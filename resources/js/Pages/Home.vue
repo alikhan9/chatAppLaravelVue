@@ -1,23 +1,58 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { onMounted } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
+import { onBeforeMount, provide } from "vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import Swal from "sweetalert2";
 
 let props = defineProps({
     users: Array,
     friends: Array,
+    friend_requests: Array,
 });
 
-onMounted(() => {
-    console.log(props.friends);
+onBeforeMount(() => {
+    provide("friend_requests", props.friend_requests);
 });
+
+const swalCustom = Swal.mixin({
+    customClass: {
+        confirmButton: "btn bg-red-500 px-4 py-2 text-white rounded",
+        cancelButton: "btn bg-gray-500 px-4 py-2 text-white mr-2 rounded",
+    },
+    buttonsStyling: false,
+});
+
+function valideDeleteFriend(id, name) {
+    swalCustom
+        .fire({
+            html:
+                "Are you sure you want to remove " +
+                name +
+                " from your friends list?",
+            title: "Confirm",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            reverseButtons: true,
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                router.delete("/deleteFriend/" + id, {
+                    preserveScroll: true,
+                    preserveState: true,
+                });
+            }
+        });
+}
 </script>
 
 <template>
     <Head title="Home" />
 
-    <AuthenticatedLayout showMenu>
+    <AuthenticatedLayout showMenu :friend_requests="friend_requests">
         <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
             <!-- Chatting -->
             <div class="flex flex-row justify-between bg-white h-full">
@@ -33,28 +68,69 @@ onMounted(() => {
                     </div>
                     <!-- end search compt -->
                     <!-- user list -->
-                    <Link
-                        :href="route('home', { friend_id: friend.id })"
+                    <div
                         v-for="(friend, index) in friends"
                         :key="index"
-                        class="flex flex-row py-4 px-2 justify-center items-center border-b-2"
+                        class="flex border-b-2 items-center justify-between py-4 px-2"
                     >
-                        <div class="w-1/4">
-                            <img
-                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                class="object-cover h-12 w-12 rounded-full"
-                                alt=""
-                            />
-                        </div>
-                        <div class="w-full">
-                            <div class="text-lg font-semibold">
-                                {{ friend.name }}
+                        <Link
+                            :href="route('home', { id: friend.id })"
+                            class="flex flex-row justify-center items-center w-[90%]"
+                        >
+                            <div class="w-1/4">
+                                <img
+                                    src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
+                                    class="object-cover h-12 w-12 rounded-full"
+                                    alt=""
+                                />
                             </div>
-                            <span class="text-gray-500"
-                                >Pick me at 9:00 Am</span
-                            >
-                        </div>
-                    </Link>
+                            <div class="w-full">
+                                <div class="text-lg font-semibold">
+                                    {{ friend.name }}
+                                </div>
+                                <span class="text-gray-500"
+                                    >Pick me at 9:00 Am</span
+                                >
+                            </div>
+                        </Link>
+                        <Dropdown width="20">
+                            <template #trigger>
+                                <span
+                                    class="inline-flex rounded-md hover:cursor-pointer"
+                                >
+                                    <unicon
+                                        name="ellipsis-v"
+                                        fill="gray"
+                                    ></unicon>
+                                </span>
+                            </template>
+                            <template #content>
+                                <div class="text-center flex-col flex gap-2">
+                                    <Link
+                                        :href="
+                                            route('publicProfile', {
+                                                id: friend.id,
+                                            })
+                                        "
+                                        class="pb-2 w-full text-blue-500 shadow-md"
+                                    >
+                                        Profile
+                                    </Link>
+                                    <button
+                                        @click="
+                                            valideDeleteFriend(
+                                                friend.id,
+                                                friend.name
+                                            )
+                                        "
+                                        class="text-red-500"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
 
                     <!-- end user list -->
                 </div>

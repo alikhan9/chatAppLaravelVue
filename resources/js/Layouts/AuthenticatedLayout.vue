@@ -1,7 +1,7 @@
 <script setup>
 import Menu from "@/Pages/Menu.vue";
 
-defineProps({
+let props = defineProps({
     showMenu: Boolean,
     search: String,
 });

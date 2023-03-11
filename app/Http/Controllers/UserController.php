@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Friend;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -44,17 +43,50 @@ class UserController extends Controller
                     'name' => $user->name
                 ])
             ,
-            'search'=> request()->search
+            'search'=> request()->search,
+            'friend_requests' => auth()->user()->pendingFriendsFrom
+            ->map(fn ($user) =>
+            [
+                'id' => $user->id,
+                'name' => $user->name
+            ])
             ]
         );
     }
 
-    public function addFriend(Request $request)
+    public function addFriend()
     {
         Friend::create([
         'user_id' => auth()->user()->id,
         'friend_id' => request()->friend_id
         ]);
+        return redirect()->back();
+    }
+
+    public function acceptFriend()
+    {
+        Friend::where('user_id', '=', request()->user_id)
+        ->where('friend_id', '=', auth()->user()->id)
+        ->update(['accepted' => true]);
+
+        return redirect()->back();
+    }
+
+    public function refuseFriend()
+    {
+        Friend::where('user_id', '=', request()->user_id)
+        ->where('friend_id', '=', auth()->user()->id)
+        ->update(['accepted' => false]);
+
+        return redirect()->back();
+    }
+
+    public function deleteFriend()
+    {
+        Friend::whereIn('user_id', [request()->friend_id,auth()->user()->id])
+        ->whereIn('friend_id', [request()->friend_id,auth()->user()->id])
+        ->delete();
+
         return redirect()->back();
     }
 }

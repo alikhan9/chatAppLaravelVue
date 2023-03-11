@@ -2,12 +2,17 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link, Head, router, usePage } from "@inertiajs/vue3";
 import Paginate from "@/Pages/Paginate.vue";
-import { watch, computed } from "vue";
+import { onBeforeMount, provide } from "vue";
 import Swal from "sweetalert2";
 
 let props = defineProps({
     users: Object,
     search: String,
+    friend_requests: Array,
+});
+
+onBeforeMount(() => {
+    provide("friend_requests", props.friend_requests);
 });
 
 function sendRequest(id) {
@@ -49,7 +54,15 @@ function sendRequest(id) {
                                 class="border rounded p-6 shadow-lg mt-5 h-[70px]"
                             >
                                 <div class="flex justify-between">
-                                    <p>{{ user.name }}</p>
+                                    <Link
+                                        :href="
+                                            route('publicProfile', {
+                                                id: user.id,
+                                            })
+                                        "
+                                        as="button"
+                                        >{{ user.name }}
+                                    </Link>
                                     <button
                                         @click="sendRequest(user.id)"
                                         class="text-blue-500 hover:text-blue-600 active:scale-95 transition duration-200"
