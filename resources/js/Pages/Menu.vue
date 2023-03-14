@@ -72,13 +72,17 @@ function refuseRequest(id) {
         <div class="flex gap-4 items-center">
             <Dropdown :width="friend_requests.length > 0 ? 500 : 48">
                 <template #trigger>
-                    <span class="inline-flex rounded-md">
-                        <button
-                            type="button"
-                            class="px-8 py-4 relative rounded-full text-center bg-blue-500 text-white flex items-center justify-center z"
-                        >
-                            Notifications
-                            <p class="absolute top-2 text-sm right-6">
+                    <span class="inline-flex rounded-md mt-2">
+                        <button type="button" class="relative">
+                            <unicon
+                                width="40"
+                                height="40"
+                                name="bell"
+                                fill="royalblue"
+                            />
+                            <p
+                                class="absolute -top-1 text-md right-[1px] text-white px-1 bg-blue-500 rounded-full"
+                            >
                                 {{ friend_requests.length }}
                             </p>
                         </button>

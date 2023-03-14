@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Friend;
 use App\Models\User;
+use App\Notifications\userNotif;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -69,15 +70,25 @@ class UserController extends Controller
         ->where('friend_id', '=', auth()->user()->id)
         ->update(['accepted' => true]);
 
+        $friend = Friend::where('user_id', '=', request()->user_id)
+        ->where('friend_id', '=', auth()->user()->id)
+        ->first();
+
+        auth()->user()->notify(new userNotif($friend, auth()->user()));
         return redirect()->back();
     }
 
     public function refuseFriend()
     {
+        $friend = Friend::where('user_id', '=', request()->user_id)
+        ->where('friend_id', '=', auth()->user()->id)
+        ->first();
+
         Friend::where('user_id', '=', request()->user_id)
         ->where('friend_id', '=', auth()->user()->id)
-        ->update(['accepted' => false]);
+        ->delete();
 
+        auth()->user()->notify(new userNotif($friend, auth()->user()));
         return redirect()->back();
     }
 

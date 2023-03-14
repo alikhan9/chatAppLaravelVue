@@ -10,9 +10,10 @@ import {
     uniLayerGroupMonochrome,
     uniCarWash,
     uniEllipsisV,
+    uniBell,
 } from "vue-unicons/dist/icons";
 
-Unicon.add([uniLayerGroupMonochrome, uniCarWash, uniEllipsisV]);
+Unicon.add([uniLayerGroupMonochrome, uniCarWash, uniEllipsisV, uniBell]);
 
 createInertiaApp({
     title: (title) => `ChatApp - ${title}`,
