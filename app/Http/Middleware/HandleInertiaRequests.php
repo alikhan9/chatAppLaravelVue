@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                     'message' => $request->session()->get('message'),
                 ];
             },
+            'notifications' => $user ? $user->notifications : null
         ]);
     }
 }

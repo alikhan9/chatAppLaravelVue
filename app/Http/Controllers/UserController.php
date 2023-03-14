@@ -70,11 +70,9 @@ class UserController extends Controller
         ->where('friend_id', '=', auth()->user()->id)
         ->update(['accepted' => true]);
 
-        $friend = Friend::where('user_id', '=', request()->user_id)
-        ->where('friend_id', '=', auth()->user()->id)
-        ->first();
+        $user = User::find(request()->user_id);
 
-        auth()->user()->notify(new userNotif($friend, auth()->user()));
+        $user->notify(new userNotif(auth()->user()->name . ' has accepted your friend request.'));
         return redirect()->back();
     }
 

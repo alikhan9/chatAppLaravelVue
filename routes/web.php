@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -66,6 +67,7 @@ Route::get('/public/profile/{id}', function () {
     );
 })->name('publicProfile')->middleware(['auth', 'verified']);
 
+
 Route::get('/search', [UserController::class, 'search'])->middleware(['auth', 'verified']);
 Route::post('/addFriend', [UserController::class, 'addFriend'])->middleware(['auth', 'verified']);
 Route::post('/acceptFriend', [UserController::class, 'acceptFriend'])->middleware(['auth', 'verified']);
@@ -76,6 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/notifications/markAsRead', [NotificationController::class,'markNotificationsAsRead']);
+    Route::delete('/notifications/delete', [NotificationController::class,'destroy']);
 });
 
 

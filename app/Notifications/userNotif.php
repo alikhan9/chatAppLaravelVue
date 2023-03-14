@@ -2,8 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\Friend;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -11,17 +9,14 @@ use Illuminate\Notifications\Notification;
 class userNotif extends Notification
 {
     use Queueable;
-    public $friend;
-    public $user;
-
+    public $message;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Friend $friend, User $user)
+    public function __construct($message)
     {
-        $this->friend = $friend;
-        $this->user = $user;
+        $this->message = $message;
     }
 
     /**
@@ -53,8 +48,11 @@ class userNotif extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'user' => $this->user,
-            'friend' => $this->friend,
+            'message' => $this->message,
+            'user' =>  [
+                'id' => auth()->user()->id,
+                'name' => auth()->user()->name,
+            ]
         ];
     }
 }

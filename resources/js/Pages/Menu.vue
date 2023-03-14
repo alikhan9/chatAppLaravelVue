@@ -1,9 +1,9 @@
 <script setup>
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
-import { ref, watch, inject, onMounted } from "vue";
+import { ref, watch, inject, onMounted, computed } from "vue";
 import debounce from "lodash/debounce";
-import { Link, router } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 
 let props = defineProps({
     search: String,
@@ -11,6 +11,9 @@ let props = defineProps({
 
 let filter = ref(props.search);
 let friend_requests = ref([]);
+const unreadNotifications = computed(() => {
+    usePage().props.notifications.filter((n) => n.read_at == null).length;
+});
 
 watch(
     filter,
@@ -52,6 +55,14 @@ function refuseRequest(id) {
         }
     );
 }
+
+function sendMarkNotif() {
+    if (unreadNotifications > 0) router.post("/notifications/markAsRead");
+}
+
+function sendDeleteNotifs() {
+    router.delete("notifications/delete");
+}
 </script>
 
 <template>
@@ -70,10 +81,21 @@ function refuseRequest(id) {
             />
         </div>
         <div class="flex gap-4 items-center">
-            <Dropdown :width="friend_requests.length > 0 ? 500 : 48">
+            <Dropdown
+                :width="
+                    friend_requests.length + $page.props.notifications.length >
+                    0
+                        ? 500
+                        : 48
+                "
+            >
                 <template #trigger>
                     <span class="inline-flex rounded-md mt-2">
-                        <button type="button" class="relative">
+                        <button
+                            @click="sendMarkNotif"
+                            type="button"
+                            class="relative"
+                        >
                             <unicon
                                 width="40"
                                 height="40"
@@ -83,13 +105,42 @@ function refuseRequest(id) {
                             <p
                                 class="absolute -top-1 text-md right-[1px] text-white px-1 bg-blue-500 rounded-full"
                             >
-                                {{ friend_requests.length }}
+                                {{
+                                    friend_requests.length +
+                                    $page.props.notifications.filter(
+                                        (n) => n.read_at == null
+                                    )
+                                }}
                             </p>
                         </button>
                     </span>
                 </template>
                 <template #content>
                     <div class="max-h-[250px] overflow-auto">
+                        <div
+                            v-for="(notification, index) in $page.props
+                                .notifications"
+                            :key="index"
+                            v-if="$page.props.notifications.length > 0"
+                            :class="{
+                                'px-10 py-6 w-full text-center': true,
+                                'border-b-2 border-dashed':
+                                    $page.props.notifications.length > 1,
+                            }"
+                        >
+                            {{ notification.data.message }}
+                        </div>
+                        <div
+                            v-if="$page.props.notifications.length > 0"
+                            class="flex justify-center"
+                        >
+                            <button
+                                class="bg-red-500 px-4 py-2 min-w-full text-white"
+                                @click="sendDeleteNotifs"
+                            >
+                                Clear all
+                            </button>
+                        </div>
                         <div
                             v-for="(friend, index) in friend_requests"
                             v-if="friend_requests.length > 0"
@@ -112,7 +163,11 @@ function refuseRequest(id) {
                                 </button>
                             </div>
                         </div>
-                        <div v-else class="p-2 text-center">
+                        <div
+                            v-else
+                            class="p-2 text-center"
+                            v-if="$page.props.notifications.length == 0"
+                        >
                             No notification...
                         </div>
                     </div>
