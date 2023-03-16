@@ -1,11 +1,9 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
-import { onBeforeMount, provide } from "vue";
 import Swal from "sweetalert2";
 
 let props = defineProps({
-    friend_requests: Array,
     friends: Array,
 });
 
@@ -15,10 +13,6 @@ const swalCustom = Swal.mixin({
         cancelButton: "btn bg-gray-500 px-4 py-2 text-white mr-2 rounded",
     },
     buttonsStyling: false,
-});
-
-onBeforeMount(() => {
-    provide("friend_requests", props.friend_requests);
 });
 
 function valideDeleteFriend(id, name) {

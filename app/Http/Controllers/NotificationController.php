@@ -14,7 +14,7 @@ class NotificationController extends Controller
 
     public function destroy()
     {
-        auth()->user()->notifications()->delete();
+        auth()->user()->notifications()->where('type', '=', 'App\Notifications\UserRequestNotification')->delete();
         return redirect()->back();
     }
 }

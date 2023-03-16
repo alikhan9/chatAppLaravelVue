@@ -1,18 +1,12 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Link, Head, router, usePage } from "@inertiajs/vue3";
+import { Link, Head, router } from "@inertiajs/vue3";
 import Paginate from "@/Pages/Paginate.vue";
-import { onBeforeMount, provide } from "vue";
 import Swal from "sweetalert2";
 
 let props = defineProps({
     users: Object,
     search: String,
-    friend_requests: Array,
-});
-
-onBeforeMount(() => {
-    provide("friend_requests", props.friend_requests);
 });
 
 function sendRequest(id) {

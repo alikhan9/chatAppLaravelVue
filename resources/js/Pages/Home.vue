@@ -2,18 +2,12 @@
 import { Head } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link, router } from "@inertiajs/vue3";
-import { onBeforeMount, provide } from "vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import Swal from "sweetalert2";
 
 let props = defineProps({
     users: Array,
     friends: Array,
-    friend_requests: Array,
-});
-
-onBeforeMount(() => {
-    provide("friend_requests", props.friend_requests);
 });
 
 const swalCustom = Swal.mixin({

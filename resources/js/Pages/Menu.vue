@@ -1,7 +1,7 @@
 <script setup>
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
-import { ref, watch, inject, onMounted, computed } from "vue";
+import { ref, watch, computed } from "vue";
 import debounce from "lodash/debounce";
 import { Link, router, usePage } from "@inertiajs/vue3";
 
@@ -10,10 +10,19 @@ let props = defineProps({
 });
 
 let filter = ref(props.search);
-let friend_requests = ref([]);
-const unreadNotifications = computed(() => {
-    usePage().props.notifications.filter((n) => n.read_at == null).length;
-});
+
+const friend_requests = computed(() =>
+    usePage().props.notifications.filter((n) => n.type.includes("Friend"))
+);
+const notifications = computed(() =>
+    usePage().props.notifications.filter((n) => n.type.includes("User"))
+);
+
+const unreadNotifications = computed(() =>
+    usePage().props.notifications.length > 0
+        ? usePage().props.notifications.filter((n) => n.read_at == null).length
+        : null
+);
 
 watch(
     filter,
@@ -26,15 +35,12 @@ watch(
     }, 300)
 );
 
-onMounted(() => {
-    friend_requests.value = inject("friend_requests");
-});
-
-function acceptRequest(id) {
+function acceptRequest(id, notification_id) {
     router.post(
         "/acceptFriend",
         {
             user_id: id,
+            notification_id,
         },
         {
             preserveScroll: true,
@@ -43,11 +49,12 @@ function acceptRequest(id) {
     );
 }
 
-function refuseRequest(id) {
+function refuseRequest(id, notification_id) {
     router.post(
         "/refuseFriend",
         {
             user_id: id,
+            notification_id,
         },
         {
             preserveScroll: true,
@@ -72,6 +79,10 @@ function sendDeleteNotifs() {
         <Link :href="route('home')" class="font-semibold text-2xl text-blue-600"
             >ChatApp
         </Link>
+        nani : {{ notifications }}
+        <div></div>
+        nani : {{ friend_requests }}
+
         <div class="w-1/2">
             <input
                 type="text"
@@ -83,10 +94,7 @@ function sendDeleteNotifs() {
         <div class="flex gap-4 items-center">
             <Dropdown
                 :width="
-                    friend_requests.length + $page.props.notifications.length >
-                    0
-                        ? 500
-                        : 48
+                    friend_requests.length + notifications.length > 0 ? 500 : 48
                 "
             >
                 <template #trigger>
@@ -106,10 +114,7 @@ function sendDeleteNotifs() {
                                 class="absolute -top-1 text-md right-[1px] text-white px-1 bg-blue-500 rounded-full"
                             >
                                 {{
-                                    friend_requests.length +
-                                    $page.props.notifications.filter(
-                                        (n) => n.read_at == null
-                                    )
+                                    unreadNotifications + friend_requests.length
                                 }}
                             </p>
                         </button>
@@ -121,17 +126,17 @@ function sendDeleteNotifs() {
                             v-for="(notification, index) in $page.props
                                 .notifications"
                             :key="index"
-                            v-if="$page.props.notifications.length > 0"
+                            v-if="notifications.length > 0"
                             :class="{
                                 'px-10 py-6 w-full text-center': true,
                                 'border-b-2 border-dashed':
-                                    $page.props.notifications.length > 1,
+                                    notifications.length !== index + 1,
                             }"
                         >
                             {{ notification.data.message }}
                         </div>
                         <div
-                            v-if="$page.props.notifications.length > 0"
+                            v-if="notifications.length > 0"
                             class="flex justify-center"
                         >
                             <button
@@ -145,18 +150,32 @@ function sendDeleteNotifs() {
                             v-for="(friend, index) in friend_requests"
                             v-if="friend_requests.length > 0"
                             :key="index"
-                            class="flex justify-between items-center px-10 py-6 w-full border-b-2 border-dashed"
+                            :class="{
+                                'flex justify-between items-center px-10 py-6 w-full': true,
+                                'border-b-2 border-dashed':
+                                    friend_requests.length !== index + 1,
+                            }"
                         >
-                            <p>{{ friend.name }}</p>
+                            <p>{{ friend.data.user.name }}</p>
                             <div class="flex gap-4">
                                 <button
-                                    @click="acceptRequest(friend.id)"
+                                    @click="
+                                        acceptRequest(
+                                            friend.data.user.id,
+                                            friend.id
+                                        )
+                                    "
                                     class="text-white bg-blue-500 px-2 py-1 rounded hover:bg-blue-600 active:scale-[0.98]"
                                 >
                                     Accept
                                 </button>
                                 <button
-                                    @click="refuseRequest(friend.id)"
+                                    @click="
+                                        refuseRequest(
+                                            friend.data.user.id,
+                                            friend.id
+                                        )
+                                    "
                                     class="text-white bg-red-500 px-2 py-1 rounded hover:bg-red-600 active:scale-[0.98]"
                                 >
                                     Decline
@@ -166,7 +185,7 @@ function sendDeleteNotifs() {
                         <div
                             v-else
                             class="p-2 text-center"
-                            v-if="$page.props.notifications.length == 0"
+                            v-if="notifications.length == 0"
                         >
                             No notification...
                         </div>

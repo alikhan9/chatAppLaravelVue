@@ -1,17 +1,12 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
-import { onBeforeMount, provide } from "vue";
+
 let props = defineProps({
     user: Object,
     authUser: Object,
     friends: Array,
-    friend_requests: Array,
     user_friends: Array,
-});
-
-onBeforeMount(() => {
-    provide("friend_requests", props.friend_requests);
 });
 
 function sendRequest(id) {

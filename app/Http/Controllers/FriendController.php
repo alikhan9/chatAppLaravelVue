@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Friend;
 use App\Models\User;
-use App\Notifications\userNotif;
+use App\Notifications\FriendRequestNotification;
+use App\Notifications\UserNotification;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class FriendController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -45,12 +46,6 @@ class UserController extends Controller
                 ])
             ,
             'search'=> request()->search,
-            'friend_requests' => auth()->user()->pendingFriendsFrom
-            ->map(fn ($user) =>
-            [
-                'id' => $user->id,
-                'name' => $user->name
-            ])
             ]
         );
     }
@@ -61,6 +56,10 @@ class UserController extends Controller
         'user_id' => auth()->user()->id,
         'friend_id' => request()->friend_id
         ]);
+
+        $user = User::find(request()->friend_id);
+        $user->notify(new FriendRequestNotification());
+
         return redirect()->back();
     }
 
@@ -71,22 +70,25 @@ class UserController extends Controller
         ->update(['accepted' => true]);
 
         $user = User::find(request()->user_id);
-
-        $user->notify(new userNotif(auth()->user()->name . ' has accepted your friend request.'));
+        $user->notify(new UserNotification(auth()->user()->name . ' has accepted your friend request.'));
+        auth()->user()->notifications
+        ->where('id', '=', request()->notification_id)
+        ->first()
+        ->delete();
         return redirect()->back();
     }
 
     public function refuseFriend()
     {
-        $friend = Friend::where('user_id', '=', request()->user_id)
-        ->where('friend_id', '=', auth()->user()->id)
-        ->first();
-
         Friend::where('user_id', '=', request()->user_id)
         ->where('friend_id', '=', auth()->user()->id)
         ->delete();
 
-        auth()->user()->notify(new userNotif($friend, auth()->user()));
+        $user = User::find(request()->user_id);
+
+        $user->notify(new UserNotification(auth()->user()->name . ' has refused your friend request.'));
+        auth()->user()->notifications->where('id', '=', request()->notification_id)->get()->first()->delete();
+
         return redirect()->back();
     }
 
