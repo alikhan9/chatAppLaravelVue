@@ -45,7 +45,7 @@ function valideDeleteFriend(id, name) {
 
 <template>
     <Head title="Home" />
-    <AuthenticatedLayout showMenu :friend_requests="friend_requests">
+    <AuthenticatedLayout showMenu>
         <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
             <!-- Chatting -->
             <div class="flex flex-row justify-between bg-white h-full">

@@ -14,7 +14,7 @@ function sendRequest(id) {
         "/addFriend",
         { friend_id: id },
         {
-            preserveState: false,
+            preserveState: true,
             onFinish: () => {
                 Swal.fire({
                     position: "top-end",

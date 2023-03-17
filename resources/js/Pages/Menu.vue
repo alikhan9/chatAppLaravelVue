@@ -64,11 +64,12 @@ function refuseRequest(id, notification_id) {
 }
 
 function sendMarkNotif() {
-    if (unreadNotifications > 0) router.post("/notifications/markAsRead");
+    if (unreadNotifications > 0)
+        router.post("/notifications/markAsRead", { preserveState: true });
 }
 
 function sendDeleteNotifs() {
-    router.delete("notifications/delete");
+    router.delete("notifications/delete", { preserveState: true });
 }
 </script>
 
@@ -79,9 +80,6 @@ function sendDeleteNotifs() {
         <Link :href="route('home')" class="font-semibold text-2xl text-blue-600"
             >ChatApp
         </Link>
-        nani : {{ notifications }}
-        <div></div>
-        nani : {{ friend_requests }}
 
         <div class="w-1/2">
             <input
@@ -114,7 +112,8 @@ function sendDeleteNotifs() {
                                 class="absolute -top-1 text-md right-[1px] text-white px-1 bg-blue-500 rounded-full"
                             >
                                 {{
-                                    unreadNotifications + friend_requests.length
+                                    friend_requests.length +
+                                    notifications.length
                                 }}
                             </p>
                         </button>
@@ -123,37 +122,14 @@ function sendDeleteNotifs() {
                 <template #content>
                     <div class="max-h-[250px] overflow-auto">
                         <div
-                            v-for="(notification, index) in $page.props
-                                .notifications"
-                            :key="index"
-                            v-if="notifications.length > 0"
-                            :class="{
-                                'px-10 py-6 w-full text-center': true,
-                                'border-b-2 border-dashed':
-                                    notifications.length !== index + 1,
-                            }"
-                        >
-                            {{ notification.data.message }}
-                        </div>
-                        <div
-                            v-if="notifications.length > 0"
-                            class="flex justify-center"
-                        >
-                            <button
-                                class="bg-red-500 px-4 py-2 min-w-full text-white"
-                                @click="sendDeleteNotifs"
-                            >
-                                Clear all
-                            </button>
-                        </div>
-                        <div
                             v-for="(friend, index) in friend_requests"
                             v-if="friend_requests.length > 0"
                             :key="index"
                             :class="{
                                 'flex justify-between items-center px-10 py-6 w-full': true,
                                 'border-b-2 border-dashed':
-                                    friend_requests.length !== index + 1,
+                                    friend_requests.length !== index + 1 ||
+                                    notifications.length > 0,
                             }"
                         >
                             <p>{{ friend.data.user.name }}</p>
@@ -183,9 +159,33 @@ function sendDeleteNotifs() {
                             </div>
                         </div>
                         <div
+                            v-for="(notification, index) in $page.props
+                                .notifications"
+                            :key="index"
+                            v-if="notifications.length > 0"
+                            :class="{
+                                'px-10 py-2 w-full text-center': true,
+                                'border-b-2 border-dashed':
+                                    notifications.length !== index + 1,
+                            }"
+                        >
+                            {{ notification.data.message }}
+                        </div>
+                        <div
+                            v-if="notifications.length > 0"
+                            class="flex justify-center"
+                        >
+                            <button
+                                class="bg-red-500 px-4 py-2 min-w-full text-white"
+                                @click="sendDeleteNotifs"
+                            >
+                                Clear all
+                            </button>
+                        </div>
+                        <div
                             v-else
                             class="p-2 text-center"
-                            v-if="notifications.length == 0"
+                            v-if="friend_requests.length == 0"
                         >
                             No notification...
                         </div>

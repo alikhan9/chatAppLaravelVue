@@ -87,7 +87,7 @@ class FriendController extends Controller
         $user = User::find(request()->user_id);
 
         $user->notify(new UserNotification(auth()->user()->name . ' has refused your friend request.'));
-        auth()->user()->notifications->where('id', '=', request()->notification_id)->get()->first()->delete();
+        auth()->user()->notifications->where('id', '=', request()->notification_id)->first()->delete();
 
         return redirect()->back();
     }

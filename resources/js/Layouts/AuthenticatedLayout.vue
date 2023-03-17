@@ -1,9 +1,19 @@
 <script setup>
 import Menu from "@/Pages/Menu.vue";
+import { onMounted } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
 let props = defineProps({
     showMenu: Boolean,
     search: String,
+});
+
+onMounted(() => {
+    window.Echo.private(
+        "App.Models.User." + usePage().props.auth.user.id
+    ).notification((notif) => {
+        usePage().props.notifications.push(notif);
+    });
 });
 </script>
 

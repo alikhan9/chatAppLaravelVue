@@ -53,4 +53,15 @@ class FriendRequestNotification extends Notification
                 ]
         ];
     }
+    public function toBroadcast(object $notifiable): array
+    {
+        return [
+            'data' => [
+                'user'=> [
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                ]
+            ]
+        ];
+    }
 }

@@ -55,4 +55,16 @@ class UserNotification extends Notification
             ]
         ];
     }
+    public function toBroadcast(object $notifiable): array
+    {
+        return [
+            'data' => [
+                'message' => $this->message,
+                'user' =>  [
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                ]
+            ]
+        ];
+    }
 }
