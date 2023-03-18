@@ -4,7 +4,6 @@ import { onMounted } from "vue";
 import { usePage } from "@inertiajs/vue3";
 
 let props = defineProps({
-    showMenu: Boolean,
     search: String,
 });
 
@@ -26,7 +25,7 @@ onMounted(() => {
                     <slot name="header" />
                 </div>
             </header>
-            <Menu v-if="showMenu" :search="search" />
+            <Menu :search="search" />
 
             <!-- Page Content -->
             <main>

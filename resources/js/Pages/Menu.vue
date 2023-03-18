@@ -18,20 +18,17 @@ const notifications = computed(() =>
     usePage().props.notifications.filter((n) => n.type.includes("User"))
 );
 
-const unreadNotifications = computed(() =>
-    usePage().props.notifications.length > 0
-        ? usePage().props.notifications.filter((n) => n.read_at == null).length
-        : null
+const unreadNotifications = computed(
+    () =>
+        usePage().props.notifications.filter(
+            (n) => n.read_at == null && n.type.includes("User")
+        ).length
 );
 
 watch(
     filter,
     debounce(() => {
-        router.get(
-            "/search",
-            { search: filter.value },
-            { preserveState: true }
-        );
+        router.get("/search", { search: filter.value });
     }, 300)
 );
 
@@ -44,7 +41,6 @@ function acceptRequest(id, notification_id) {
         },
         {
             preserveScroll: true,
-            preserveState: true,
         }
     );
 }
@@ -58,18 +54,16 @@ function refuseRequest(id, notification_id) {
         },
         {
             preserveScroll: true,
-            preserveState: true,
         }
     );
 }
 
 function sendMarkNotif() {
-    if (unreadNotifications > 0)
-        router.post("/notifications/markAsRead", { preserveState: true });
+    if (unreadNotifications.value > 0) router.post("/notifications/markAsRead");
 }
 
 function sendDeleteNotifs() {
-    router.delete("notifications/delete", { preserveState: true });
+    router.delete("notifications/delete");
 }
 </script>
 
@@ -77,7 +71,9 @@ function sendDeleteNotifs() {
     <div
         class="px-5 py-5 flex justify-between items-center bg-white border-b-2 max-h-[9vh]"
     >
-        <Link :href="route('home')" class="font-semibold text-2xl text-blue-600"
+        <Link
+            :href="route('home')"
+            class="font-semibold text-2xl text-blue-600 hover:text-blue-500"
             >ChatApp
         </Link>
 
@@ -112,8 +108,7 @@ function sendDeleteNotifs() {
                                 class="absolute -top-1 text-md right-[1px] text-white px-1 bg-blue-500 rounded-full"
                             >
                                 {{
-                                    friend_requests.length +
-                                    notifications.length
+                                    friend_requests.length + unreadNotifications
                                 }}
                             </p>
                         </button>

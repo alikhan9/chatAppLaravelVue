@@ -45,150 +45,145 @@ function valideDeleteFriend(id, name) {
 
 <template>
     <Head title="Home" />
-    <AuthenticatedLayout showMenu>
-        <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
-            <!-- Chatting -->
-            <div class="flex flex-row justify-between bg-white h-full">
-                <!-- chat list -->
-                <div class="flex flex-col w-2/5 border-r-2 overflow-y-auto">
-                    <!-- search compt -->
-                    <div class="border-b-2 py-4 px-2">
-                        <input
-                            type="text"
-                            placeholder="search chatting"
-                            class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
-                        />
-                    </div>
-                    <!-- end search compt -->
-                    <!-- user list -->
-                    <div
-                        v-for="(friend, index) in friends"
-                        :key="index"
-                        class="flex border-b-2 items-center justify-between py-4 px-2"
+    <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
+        <!-- Chatting -->
+        <div class="flex flex-row justify-between bg-white h-full">
+            <!-- chat list -->
+            <div class="flex flex-col w-2/5 border-r-2 overflow-y-auto">
+                <!-- search compt -->
+                <div class="border-b-2 py-4 px-2">
+                    <input
+                        type="text"
+                        placeholder="search chatting"
+                        class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
+                    />
+                </div>
+                <!-- end search compt -->
+                <!-- user list -->
+                <div
+                    v-for="(friend, index) in friends"
+                    :key="index"
+                    class="flex border-b-2 items-center justify-between py-4 px-2"
+                >
+                    <Link
+                        :href="route('home', { id: friend.id })"
+                        preserve-scroll
+                        preserve-state
+                        class="flex flex-row justify-center items-center w-[90%]"
                     >
-                        <Link
-                            :href="route('home', { id: friend.id })"
-                            class="flex flex-row justify-center items-center w-[90%]"
-                        >
-                            <div class="w-1/4">
-                                <img
-                                    src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                    class="object-cover h-12 w-12 rounded-full"
-                                    alt=""
-                                />
+                        <div class="w-1/4">
+                            <img
+                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
+                                class="object-cover h-12 w-12 rounded-full"
+                                alt=""
+                            />
+                        </div>
+                        <div class="w-full">
+                            <div class="text-lg font-semibold">
+                                {{ friend.name }}
                             </div>
-                            <div class="w-full">
-                                <div class="text-lg font-semibold">
-                                    {{ friend.name }}
-                                </div>
-                                <span class="text-gray-500"
-                                    >Pick me at 9:00 Am</span
+                            <span class="text-gray-500"
+                                >Pick me at 9:00 Am</span
+                            >
+                        </div>
+                    </Link>
+                    <Dropdown width="20">
+                        <template #trigger>
+                            <span
+                                class="inline-flex rounded-md hover:cursor-pointer"
+                            >
+                                <unicon name="ellipsis-v" fill="gray"></unicon>
+                            </span>
+                        </template>
+                        <template #content>
+                            <div class="text-center flex-col flex gap-2">
+                                <Link
+                                    :href="
+                                        route('publicProfile', {
+                                            id: friend.id,
+                                        })
+                                    "
+                                    class="pb-2 w-full text-blue-500 shadow-md"
                                 >
+                                    Profile
+                                </Link>
+                                <button
+                                    @click="
+                                        valideDeleteFriend(
+                                            friend.id,
+                                            friend.name
+                                        )
+                                    "
+                                    class="text-red-500"
+                                >
+                                    Delete
+                                </button>
                             </div>
-                        </Link>
-                        <Dropdown width="20">
-                            <template #trigger>
-                                <span
-                                    class="inline-flex rounded-md hover:cursor-pointer"
-                                >
-                                    <unicon
-                                        name="ellipsis-v"
-                                        fill="gray"
-                                    ></unicon>
-                                </span>
-                            </template>
-                            <template #content>
-                                <div class="text-center flex-col flex gap-2">
-                                    <Link
-                                        :href="
-                                            route('publicProfile', {
-                                                id: friend.id,
-                                            })
-                                        "
-                                        class="pb-2 w-full text-blue-500 shadow-md"
-                                    >
-                                        Profile
-                                    </Link>
-                                    <button
-                                        @click="
-                                            valideDeleteFriend(
-                                                friend.id,
-                                                friend.name
-                                            )
-                                        "
-                                        class="text-red-500"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </template>
-                        </Dropdown>
-                    </div>
+                        </template>
+                    </Dropdown>
+                </div>
 
-                    <!-- end user list -->
-                </div>
-                <!-- end chat list -->
-                <!-- message -->
-                <div class="w-full px-5 flex flex-col justify-between">
-                    <div class="flex flex-col mt-5">
-                        <div class="flex justify-end mb-4">
-                            <div
-                                class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-                            >
-                                Welcome to group everyone !
-                            </div>
-                            <img
-                                src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                                class="object-cover h-8 w-8 rounded-full"
-                                alt=""
-                            />
-                        </div>
-                        <div class="flex justify-start mb-4">
-                            <img
-                                src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                                class="object-cover h-8 w-8 rounded-full"
-                                alt=""
-                            />
-                            <div
-                                class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
-                            >
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Quaerat at praesentium, aut
-                                ullam delectus odio error sit rem. Architecto
-                                nulla doloribus laborum illo rem enim dolor odio
-                                saepe, consequatur quas?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="py-5">
-                        <input
-                            class="w-full bg-gray-300 py-5 px-3 rounded-xl"
-                            type="text"
-                            placeholder="type your message here..."
-                        />
-                    </div>
-                </div>
-                <!-- end message -->
-                <div class="w-2/5 border-l-2 px-5">
-                    <div class="flex flex-col">
-                        <div class="font-semibold text-xl py-4">
-                            Mern Stack Group
+                <!-- end user list -->
+            </div>
+            <!-- end chat list -->
+            <!-- message -->
+            <div class="w-full px-5 flex flex-col justify-between">
+                <div class="flex flex-col mt-5">
+                    <div class="flex justify-end mb-4">
+                        <div
+                            class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
+                        >
+                            Welcome to group everyone !
                         </div>
                         <img
-                            src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                            class="object-cover rounded-xl h-64"
+                            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+                            class="object-cover h-8 w-8 rounded-full"
                             alt=""
                         />
-                        <div class="font-semibold py-4">
-                            Created 22 Sep 2021
-                        </div>
-                        <div class="font-light">
+                    </div>
+                    <div class="flex justify-start mb-4">
+                        <img
+                            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+                            class="object-cover h-8 w-8 rounded-full"
+                            alt=""
+                        />
+                        <div
+                            class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
+                        >
                             Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Deserunt, perspiciatis!
+                            elit. Quaerat at praesentium, aut ullam delectus
+                            odio error sit rem. Architecto nulla doloribus
+                            laborum illo rem enim dolor odio saepe, consequatur
+                            quas?
                         </div>
+                    </div>
+                </div>
+                <div class="py-5">
+                    <input
+                        class="w-full bg-gray-300 py-5 px-3 rounded-xl"
+                        type="text"
+                        placeholder="type your message here..."
+                    />
+                </div>
+            </div>
+            <!-- end message -->
+            <div class="w-2/5 border-l-2 px-5">
+                <div class="flex flex-col">
+                    <div class="font-semibold text-xl py-4">
+                        Mern Stack Group
+                    </div>
+                    <img
+                        src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
+                        class="object-cover rounded-xl h-64"
+                        alt=""
+                    />
+                    <div class="font-semibold py-4">Created 22 Sep 2021</div>
+                    <div class="font-light">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Deserunt, perspiciatis!
                     </div>
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </div>
 </template>

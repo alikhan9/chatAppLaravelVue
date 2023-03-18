@@ -86,4 +86,9 @@ class User extends Authenticatable
         ->mergedRelationWithModel(User::class, 'friends_view')
         ->select('id', 'name', 'email');
     }
+
+    public function privateMessages()
+    {
+        return $this->hasMany(PrivateMessage::class);
+    }
 }

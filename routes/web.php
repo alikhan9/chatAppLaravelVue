@@ -12,6 +12,11 @@ Route::get('/', function () {
         'Home',
         [
             'friends' => auth()->user()->friends,
+            'messages' => request()->id ?
+            auth()->user()->privateMessages()
+                ->where('to', '=', request()->id)
+                ->orWhere('from', '=', request()->id)
+            : []
         ]
     );
 })->middleware(['auth', 'verified'])->name('home');
