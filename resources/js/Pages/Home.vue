@@ -1,14 +1,31 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { watch, onBeforeMount } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import Swal from "sweetalert2";
+import Messages from "./Messages.vue";
+import { useMessagesStore } from "@/Stores/useMessagesStore.js";
+
+let useMessages = useMessagesStore();
 
 let props = defineProps({
     users: Array,
     friends: Array,
+    messages: Array,
+    currentFriend: String,
 });
+
+onBeforeMount(() => {
+    useMessages.setMessages(props.messages);
+});
+
+watch(
+    () => props.messages,
+    (newValue, oldValue) => {
+        useMessages.setMessages(newValue);
+    }
+);
 
 const swalCustom = Swal.mixin({
     customClass: {
@@ -45,11 +62,13 @@ function valideDeleteFriend(id, name) {
 
 <template>
     <Head title="Home" />
-    <div v-if="!users" class="h-[91vh] shadow-lg rounded-lg">
+    <div class="h-[91vh] shadow-lg rounded-lg">
         <!-- Chatting -->
         <div class="flex flex-row justify-between bg-white h-full">
             <!-- chat list -->
-            <div class="flex flex-col w-2/5 border-r-2 overflow-y-auto">
+            <div
+                class="flex flex-col w-2/5 border-r-2 overflow-y-auto scrollbar-hide"
+            >
                 <!-- search compt -->
                 <div class="border-b-2 py-4 px-2">
                     <input
@@ -127,45 +146,7 @@ function valideDeleteFriend(id, name) {
             </div>
             <!-- end chat list -->
             <!-- message -->
-            <div class="w-full px-5 flex flex-col justify-between">
-                <div class="flex flex-col mt-5">
-                    <div class="flex justify-end mb-4">
-                        <div
-                            class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-                        >
-                            Welcome to group everyone !
-                        </div>
-                        <img
-                            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                            class="object-cover h-8 w-8 rounded-full"
-                            alt=""
-                        />
-                    </div>
-                    <div class="flex justify-start mb-4">
-                        <img
-                            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                            class="object-cover h-8 w-8 rounded-full"
-                            alt=""
-                        />
-                        <div
-                            class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
-                        >
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Quaerat at praesentium, aut ullam delectus
-                            odio error sit rem. Architecto nulla doloribus
-                            laborum illo rem enim dolor odio saepe, consequatur
-                            quas?
-                        </div>
-                    </div>
-                </div>
-                <div class="py-5">
-                    <input
-                        class="w-full bg-gray-300 py-5 px-3 rounded-xl"
-                        type="text"
-                        placeholder="type your message here..."
-                    />
-                </div>
-            </div>
+            <Messages :id="currentFriend" />
             <!-- end message -->
             <div class="w-2/5 border-l-2 px-5">
                 <div class="flex flex-col">

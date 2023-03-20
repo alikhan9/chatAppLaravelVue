@@ -21,7 +21,10 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
+        "luxon": "^3.3.0",
+        "pinia": "^2.0.33",
         "sweetalert2": "^11.7.3",
+        "tailwind-scrollbar-hide": "^1.1.7",
         "vue-unicons": "^3.3.1"
     }
 }

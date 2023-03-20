@@ -9,6 +9,8 @@ class PrivateMessage extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['from','to','message'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

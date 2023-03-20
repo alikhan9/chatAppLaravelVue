@@ -3,6 +3,7 @@
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\PrivateMessageController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,10 +14,11 @@ Route::get('/', function () {
         [
             'friends' => auth()->user()->friends,
             'messages' => request()->id ?
-            auth()->user()->privateMessages()
-                ->where('to', '=', request()->id)
-                ->orWhere('from', '=', request()->id)
-            : []
+                auth()->user()->privateMessages->filter(function ($message) {
+                    return $message->to == request()->id || $message->from == request()->id;
+                })
+            : [],
+            'currentFriend' => request()->id
         ]
     );
 })->middleware(['auth', 'verified'])->name('home');
@@ -65,6 +67,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/notifications/markAsRead', [NotificationController::class,'markNotificationsAsRead']);
     Route::delete('/notifications/delete', [NotificationController::class,'destroy']);
+
+
+    Route::post('/message/private', [PrivateMessageController::class,'store']);
 });
 
 

@@ -2,57 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\PrivateMessage;
-use Illuminate\Http\Request;
 
 class PrivateMessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function store()
     {
-        //
-    }
+        $privateMessage = PrivateMessage::create([
+            'from' => auth()->user()->id,
+            'to' => request()->to,
+            'message' => request()->message
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(PrivateMessage $privateMessage)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PrivateMessage $privateMessage)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PrivateMessage $privateMessage)
-    {
-        //
+        event(new MessageSent($privateMessage));
+        return $privateMessage;
     }
 
     /**

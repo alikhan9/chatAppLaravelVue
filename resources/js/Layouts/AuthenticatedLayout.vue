@@ -2,7 +2,9 @@
 import Menu from "@/Pages/Menu.vue";
 import { onMounted } from "vue";
 import { usePage } from "@inertiajs/vue3";
+import { useMessagesStore } from "@/Stores/useMessagesStore";
 
+let useMessages = useMessagesStore();
 let props = defineProps({
     search: String,
 });
@@ -13,6 +15,14 @@ onMounted(() => {
     ).notification((notif) => {
         usePage().props.notifications.push(notif);
     });
+
+    window.Echo.private("chat-" + usePage().props.auth.user.id).listen(
+        "MessageSent",
+        (e) => {
+            if (e.from == useMessages.currentFriend)
+                useMessages.addMessage(e.privateMessage);
+        }
+    );
 });
 </script>
 
