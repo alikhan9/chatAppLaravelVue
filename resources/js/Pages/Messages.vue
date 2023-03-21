@@ -16,7 +16,7 @@ function sendMessage() {
     if (!sending.value && currentMessage.value != "") {
         sending.value = true;
         const options = {
-            url: "/message/private",
+            url: useMessages.toUser ? "/message/private" : "/message/public",
             method: "POST",
             data: {
                 to: props.id,

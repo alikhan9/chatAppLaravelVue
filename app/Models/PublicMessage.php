@@ -10,4 +10,13 @@ class PublicMessage extends Model
     use HasFactory;
 
     protected $fillable = ['to','from','message'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'from');
+    }
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'to');
+    }
 }

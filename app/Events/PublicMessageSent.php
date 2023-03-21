@@ -33,6 +33,6 @@ class PublicMessageSent
      */
     public function broadcastOn()
     {
-        return new Channel('chat-public-'. $this->publicMessage->to)->to;
+        return new Channel('chat-public-'. $this->publicMessage->to);
     }
 }

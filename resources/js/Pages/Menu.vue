@@ -4,6 +4,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import { ref, watch, computed } from "vue";
 import debounce from "lodash/debounce";
 import { Link, router, usePage } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 let props = defineProps({
     search: String,
@@ -65,6 +66,32 @@ function sendMarkNotif() {
 function sendDeleteNotifs() {
     router.delete("notifications/delete");
 }
+
+const swalCustom = Swal.mixin({
+    customClass: {
+        confirmButton: "btn bg-blue-500 px-4 py-2 text-white rounded",
+        cancelButton: "btn bg-red-500 px-4 py-2 text-white mr-2 rounded",
+    },
+    buttonsStyling: false,
+});
+
+function sendCreateGroup() {
+    swalCustom.fire({
+        title: "Choose a name",
+        input: "text",
+        inputAttributes: {
+            autocapitalize: "off",
+        },
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonText: "Submit",
+        showLoaderOnConfirm: true,
+        preConfirm: (group_name) => {
+            router.post("/addGroup", { group_name }, { only: ["groups"] });
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+    });
+}
 </script>
 
 <template>
@@ -86,6 +113,41 @@ function sendDeleteNotifs() {
             />
         </div>
         <div class="flex gap-4 items-center">
+            <Dropdown
+                :width="
+                    friend_requests.length + notifications.length > 0 ? 500 : 48
+                "
+            >
+                <template #trigger>
+                    <span class="inline-flex rounded-md mt-2">
+                        <button
+                            @click="sendMarkNotif"
+                            type="button"
+                            class="relative"
+                        >
+                            <unicon
+                                width="40"
+                                height="40"
+                                name="users-alt"
+                                fill="gray"
+                            />
+                        </button>
+                    </span>
+                </template>
+                <template #content>
+                    <div class="flex flex-col">
+                        <DropdownLink :href="route('friends.manage')">
+                            Manage contacts
+                        </DropdownLink>
+                        <div
+                            class="block w-full px-4 py-2 hover:cursor-pointer text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                            @click="sendCreateGroup"
+                        >
+                            Create a group
+                        </div>
+                    </div>
+                </template>
+            </Dropdown>
             <Dropdown
                 :width="
                     friend_requests.length + notifications.length > 0 ? 500 : 48

@@ -11,10 +11,15 @@ class Group extends Model
 
     protected $fillable = [
         'name',
+        'owner'
     ];
 
     public function users()
     {
         return $this->belongsTo(User::class, 'owner');
+    }
+    public function messages()
+    {
+        return $this->hasMany(PublicMessage::class, 'to');
     }
 }

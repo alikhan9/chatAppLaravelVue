@@ -14,7 +14,7 @@ class GroupController extends Controller
     {
         Group::create([
             'owner' => auth()->user()->id,
-            'name' => request()->name
+            'name' => request()->group_name
         ]);
 
         return redirect()->back();
