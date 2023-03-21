@@ -92,4 +92,8 @@ class User extends Authenticatable
         return  $this->hasMany(PrivateMessage::class, 'from')
         ->orWhere('to', '=', $this->id);
     }
+    public function groups()
+    {
+        return $this->hasMany(Group::class);
+    }
 }

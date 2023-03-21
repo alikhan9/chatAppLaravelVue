@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MessageSent;
-use App\Models\PrivateMessage;
+use App\Models\PublicMessage;
 
-class PrivateMessageController extends Controller
+class PublicMessageController extends Controller
 {
     public function store()
     {
-        $privateMessage = PrivateMessage::create([
+        $privateMessage = PublicMessage::create([
             'from' => auth()->user()->id,
             'to' => request()->to,
             'message' => request()->message
@@ -18,5 +17,4 @@ class PrivateMessageController extends Controller
         event(new MessageSent($privateMessage));
         return $privateMessage;
     }
-
 }
