@@ -20,7 +20,11 @@ Route::get('/', function () {
                 auth()->user()->privateMessages->filter(function ($message) {
                     return $message->to == request()->id || $message->from == request()->id;
                 })
-            : Group::find(request()->group_id)->with('to')->messages,
+            : (
+                request()->group_id ?
+                Group::find(request()->group_id)->messages
+                : []
+            ),
             'currentFriend' => request()->id ? request()->id : request()->group_id,
             'groups' => auth()->user()->groups,
             'toUser' => request()->id ? true : false

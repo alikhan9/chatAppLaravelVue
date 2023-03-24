@@ -1,69 +1,45 @@
 <script setup>
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Link, Head, router } from "@inertiajs/vue3";
-import Paginate from "@/Pages/Paginate.vue";
-import Swal from "sweetalert2";
+import { Link, Head } from "@inertiajs/vue3";
+
+import Users from "./Users.vue";
 
 let props = defineProps({
     users: Object,
-    search: String,
+    groups: Object,
 });
-
-function sendRequest(id) {
-    router.post(
-        "/addFriend",
-        { friend_id: id },
-        {
-            onFinish: () => {
-                Swal.fire({
-                    position: "top-end",
-                    width: 400,
-                    icon: "success",
-                    text: "Friend request sent.",
-                    timer: 1000,
-                    showConfirmButton: false,
-                });
-            },
-        }
-    );
-}
 </script>
 <template>
     <Head title="Users" />
+
     <div class="flex items-center w-screen justify-center h-[91vh]">
         <div class="h-[80vh]">
             <div v-if="users.data.length > 0">
-                <Link class="rounded bg-red-500 px-4 py-2" :href="route('home')"
-                    >Go back
-                </Link>
-                <div class="min-h-[60vh]">
-                    <div class="grid grid-cols-3 w-[90vw] gap-4">
-                        <div
-                            v-for="user in users.data"
-                            :id="user.email"
-                            class="border rounded p-6 shadow-lg mt-5 h-[70px]"
+                <div class="relative mb-3">
+                    <Link
+                        class="rounded bg-red-500 px-4 py-2"
+                        :href="route('home')"
+                        >Go back
+                    </Link>
+                    <label
+                        for="Toggle3"
+                        class="inline-flex items-center absolute right-1/2 -translate-y-1 p-2 rounded-md cursor-pointer text-gray-800"
+                    >
+                        <input
+                            id="Toggle3"
+                            type="checkbox"
+                            class="hidden peer"
+                        />
+                        <span
+                            class="px-4 py-2 rounded-l-md bg-violet-400 peer-checked:bg-gray-300"
+                            >Users</span
                         >
-                            <div class="flex justify-between">
-                                <Link
-                                    :href="
-                                        route('publicProfile', {
-                                            id: user.id,
-                                        })
-                                    "
-                                    as="button"
-                                    >{{ user.name }}
-                                </Link>
-                                <button
-                                    @click="sendRequest(user.id)"
-                                    class="text-blue-500 hover:text-blue-600 active:scale-95 transition duration-200"
-                                >
-                                    Send friend request
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                        <span
+                            class="px-4 py-2 rounded-r-md bg-gray-300 peer-checked:bg-violet-400"
+                            >Groups</span
+                        >
+                    </label>
                 </div>
-                <Paginate class="mt-20" :links="users.links" />
+                <Users :users="users" />
             </div>
             <div
                 v-else

@@ -10,6 +10,7 @@ class PublicMessage extends Model
     use HasFactory;
 
     protected $fillable = ['to','from','message'];
+    protected $with = ['user'];
 
     public function user()
     {

@@ -77,7 +77,11 @@ watch(
                             message.to == $page.props.auth.user.id,
                     }"
                 >
-                    {{ message.message }}
+                    {{
+                        useMessages.toUser
+                            ? message.message
+                            : message.user.name + " : " + message.message
+                    }}
                 </div>
                 <div class="flex justify-end">
                     {{ convertDateToHuman(message.created_at) }}

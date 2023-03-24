@@ -29,6 +29,12 @@ watch(
         useMessages.setMessages(newValue);
     }
 );
+watch(
+    () => props.toUser,
+    (newValue, oldValue) => {
+        useMessages.toUser = newValue;
+    }
+);
 
 const swalCustom = Swal.mixin({
     customClass: {

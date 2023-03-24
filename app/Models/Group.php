@@ -14,9 +14,9 @@ class Group extends Model
         'owner'
     ];
 
-    public function users()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'owner');
+        return $this->belongsTo(User::class, 'owner')->select('id', 'name', 'email');
     }
     public function messages()
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Friend;
+use App\Models\Group;
 use App\Models\User;
 use App\Notifications\FriendRequestNotification;
 use App\Notifications\UserNotification;
@@ -19,33 +20,35 @@ class FriendController extends Controller
             'Search',
             [
             'users' => User::where('name', 'like', '%'. request()->search . '%')
-            ->where('id', '!=', auth()->user()->id)
-            ->whereNotIn(
-                'id',
-                function ($query) {
-                    $query->select('friend_id')
-                    ->from('friends')
-                    ->where('user_id', '=', auth()->user()->id)
-                    ->get();
-                }
-            )
-            ->whereNotIn(
-                'id',
-                function ($query) {
-                    $query->select('user_id')
-                    ->from('friends')
-                    ->where('friend_id', '=', auth()->user()->id)
-                    ->get();
-                }
-            )
-            ->paginate(18)
-            ->withQueryString()
-            ->through(fn ($user) => [
-                    'id' => $user->id,
-                    'name' => $user->name
-                ])
+                ->where('id', '!=', auth()->user()->id)
+                ->whereNotIn(
+                    'id',
+                    function ($query) {
+                        $query->select('friend_id')
+                        ->from('friends')
+                        ->where('user_id', '=', auth()->user()->id)
+                        ->get();
+                    }
+                )
+                ->whereNotIn(
+                    'id',
+                    function ($query) {
+                        $query->select('user_id')
+                        ->from('friends')
+                        ->where('friend_id', '=', auth()->user()->id)
+                        ->get();
+                    }
+                )
+                ->paginate(18)
+                ->withQueryString()
+                ->through(fn ($user) => [
+                        'id' => $user->id,
+                        'name' => $user->name
+                    ])
             ,
-            'search'=> request()->search,
+            'groups' => Group::where('name', 'like', '%'. request()->search . '%')
+                ->with('user')
+                ->get(['id','name','owner' ])
             ]
         );
     }
