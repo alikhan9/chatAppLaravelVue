@@ -1,6 +1,6 @@
 <script setup>
-import { Link, Head } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { Link, Head, router } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import Groups from "./Groups.vue";
 
 import Users from "./Users.vue";
@@ -14,14 +14,25 @@ let props = defineProps({
     },
 });
 
-let toggleUsersGroups = ref(props.toggle ? props.toggle : false);
+let toggleUsersGroups = ref(props.toggle);
+
+watch(toggleUsersGroups, (newValue, oldValue) => {
+    if (newValue) {
+        if (props.users.links.length > 0)
+            if (props.users.links[0].url != null)
+                router.get(props.users.links[1].url, { toggle: newValue });
+    } else {
+        if (props.groups.links.length > 0)
+            if (props.groups.links[0].url != null)
+                router.get(props.groups.links[1].url, { toggle: newValue });
+    }
+});
 </script>
 <template>
     <Head title="Users" />
 
     <div class="flex items-center w-screen justify-center h-[91vh]">
         <div class="h-[80vh]">
-            {{ toggleUsersGroups }}
             <div v-if="users.data.length > 0">
                 <div class="relative mb-3">
                     <Link
@@ -54,11 +65,7 @@ let toggleUsersGroups = ref(props.toggle ? props.toggle : false);
                     :users="users"
                     v-if="!toggleUsersGroups"
                 />
-                <Groups
-                    :toggle="toggleUsersGroups"
-                    :groups="toggleUsersGroups"
-                    v-else
-                />
+                <Groups :toggle="toggleUsersGroups" :groups="groups" v-else />
             </div>
             <div
                 v-else

@@ -18,7 +18,7 @@ function sendRequest(id) {
                     position: "top-end",
                     width: 400,
                     icon: "success",
-                    text: "Friend request sent.",
+                    text: "Group joined.",
                     timer: 1000,
                     showConfirmButton: false,
                 });

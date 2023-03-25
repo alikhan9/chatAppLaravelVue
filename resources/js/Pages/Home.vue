@@ -50,7 +50,7 @@ function valideDeleteGroup(id, name) {
             html:
                 "Are you sure you want to remove " +
                 name +
-                " from your friends list?",
+                " from your group list?",
             title: "Confirm",
             icon: "warning",
             showCancelButton: true,
@@ -109,65 +109,74 @@ function valideDeleteFriend(id, name) {
                 </div>
                 <!-- end search compt -->
                 <!-- user list -->
-                <div
-                    v-for="(group, index) in groups"
-                    :key="index"
-                    class="flex border-b-2 items-center justify-between py-4 px-2"
-                >
-                    <Link
-                        :href="route('home', { group_id: group.id })"
-                        preserve-scroll
-                        preserve-state
-                        class="flex flex-row justify-center items-center w-[90%]"
+                <div class="border-b border-dashed">
+                    <div
+                        v-for="(group, index) in groups"
+                        :key="index"
+                        class="flex border-b-2 items-center justify-between py-4 px-2"
                     >
-                        <div class="w-1/4">
-                            <img
-                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                class="object-cover h-12 w-12 rounded-full"
-                                alt=""
-                            />
-                        </div>
-                        <div class="w-full">
-                            <div class="text-lg font-semibold">
-                                {{ group.name }}
+                        <Link
+                            :href="route('home', { group_id: group.id })"
+                            preserve-scroll
+                            preserve-state
+                            class="flex flex-row justify-center items-center w-[90%]"
+                        >
+                            <div class="w-1/4">
+                                <img
+                                    src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
+                                    class="object-cover h-12 w-12 rounded-full"
+                                    alt=""
+                                />
                             </div>
-                            <span class="text-gray-500"
-                                >Pick me at 9:00 Am</span
-                            >
-                        </div>
-                    </Link>
-                    <Dropdown width="20">
-                        <template #trigger>
-                            <span
-                                class="inline-flex rounded-md hover:cursor-pointer"
-                            >
-                                <unicon name="ellipsis-v" fill="gray"></unicon>
-                            </span>
-                        </template>
-                        <template #content>
-                            <div class="text-center flex-col flex gap-2">
-                                <Link
-                                    :href="
-                                        route('groupProfile', {
-                                            id: group.id,
-                                        })
-                                    "
-                                    class="pb-2 w-full text-blue-500 shadow-md"
+                            <div class="w-full">
+                                <div class="text-lg font-semibold">
+                                    {{ group.name }}
+                                </div>
+                                <span class="text-gray-500"
+                                    >Pick me at 9:00 Am</span
                                 >
-                                    Profile
-                                </Link>
-                                <button
-                                    @click="
-                                        valideDeleteGroup(group.id, group.name)
-                                    "
-                                    class="text-red-500"
-                                >
-                                    Delete
-                                </button>
                             </div>
-                        </template>
-                    </Dropdown>
+                        </Link>
+                        <Dropdown width="20">
+                            <template #trigger>
+                                <span
+                                    class="inline-flex rounded-md hover:cursor-pointer"
+                                >
+                                    <unicon
+                                        name="ellipsis-v"
+                                        fill="gray"
+                                    ></unicon>
+                                </span>
+                            </template>
+                            <template #content>
+                                <div class="text-center flex-col flex gap-2">
+                                    <Link
+                                        :href="
+                                            route('groupProfile', {
+                                                id: group.id,
+                                            })
+                                        "
+                                        class="pb-2 w-full text-blue-500 shadow-md"
+                                    >
+                                        Profile
+                                    </Link>
+                                    <button
+                                        @click="
+                                            valideDeleteGroup(
+                                                group.id,
+                                                group.name
+                                            )
+                                        "
+                                        class="text-red-500"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
                 </div>
+
                 <div
                     v-for="(friend, index) in friends"
                     :key="index"

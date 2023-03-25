@@ -1,13 +1,8 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
-import { onMounted } from "vue";
 let props = defineProps({
     links: Array,
     toggle: Boolean,
-});
-
-onMounted(() => {
-    console.log(props.toggle);
 });
 </script>
 
@@ -31,6 +26,7 @@ onMounted(() => {
                     :href="link.url ? link.url : ''"
                     v-html="link.label"
                     :data="{ toggle: toggle }"
+                    :only="['users', 'groups']"
                     :class="{
                         'px-4 py-2 rounded text-white': true,
                         'bg-gray-500': !link.url,
@@ -39,6 +35,5 @@ onMounted(() => {
                 />
             </div>
         </div>
-        {{ toggle }}
     </div>
 </template>

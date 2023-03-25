@@ -26,7 +26,15 @@ Route::get('/', function () {
                 : []
             ),
             'currentFriend' => request()->id ? request()->id : request()->group_id,
-            'groups' => auth()->user()->groups,
+            'groups' => [...auth()->user()->groups,...Group::whereIn(
+                'id',
+                function ($query) {
+                    $query->select('group_id')
+                    ->from('group_members')
+                    ->where('user_id', '=', auth()->user()->id)
+                    ->get();
+                }
+            )->get()],
             'toUser' => request()->id ? true : false
         ]
     );
@@ -83,6 +91,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/message/public', [PublicMessageController::class,'store']);
 
     Route::post('/addGroup', [GroupController::class, 'store']);
+    Route::post('/joinGroup', [GroupController::class, 'join']);
+    Route::delete('/deleteGroup/{id}', [GroupController::class, 'destroy']);
     Route::get('/groupProfile', [GroupController::class, 'index'])->name('groupProfile');
 });
 

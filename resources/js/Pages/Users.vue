@@ -3,7 +3,7 @@ import { Link, router } from "@inertiajs/vue3";
 import Paginate from "@/Pages/Paginate.vue";
 import Swal from "sweetalert2";
 
-defineProps({
+let props = defineProps({
     users: Object,
     toggle: Boolean,
 });
