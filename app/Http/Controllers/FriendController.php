@@ -16,6 +16,7 @@ class FriendController extends Controller
      */
     public function search()
     {
+        // dd(request()->toggle);
         return Inertia::render(
             'Search',
             [
@@ -46,9 +47,15 @@ class FriendController extends Controller
                         'name' => $user->name
                     ])
             ,
-            'groups' => Group::where('name', 'like', '%'. request()->search . '%')
-                ->with('user')
-                ->get(['id','name','owner' ])
+            'groups' => Group::where('name', 'like', '%'. request()->search . '%')->with('user')
+                ->paginate(18)
+                ->withQueryString()
+                ->through(fn ($group) => [
+                    'id' => $group->id,
+                    'name' => $group->name,
+                    'owner' => $group->user
+                ]),
+                'toggle' => request()->toggle
             ]
         );
     }

@@ -13,6 +13,9 @@ class Group extends Model
         'name',
         'owner'
     ];
+    protected $with = [
+        'user'
+    ];
 
     public function user()
     {

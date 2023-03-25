@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 
 defineProps({
     groups: Object,
+    toggle: Boolean,
 });
 
 function sendRequest(id) {
@@ -34,7 +35,7 @@ function sendRequest(id) {
                 <div
                     v-for="group in groups.data"
                     :id="group.id"
-                    class="border rounded p-6 shadow-lg mt-5 h-[70px]"
+                    class="border rounded p-6 shadow-lg mt-5 h-[80px]"
                 >
                     <div class="flex justify-between">
                         <Link
@@ -50,12 +51,25 @@ function sendRequest(id) {
                             @click="sendRequest(group.id)"
                             class="text-blue-500 hover:text-blue-600 active:scale-95 transition duration-200"
                         >
-                            Send friend request
+                            Join group
                         </button>
+                    </div>
+                    <div class="text-sm pb-2 italic">
+                        By :
+                        <Link
+                            :href="
+                                route('publicProfile', {
+                                    id: group.owner.id,
+                                })
+                            "
+                            class="text-blue-500"
+                        >
+                            {{ group.owner.name }}
+                        </Link>
                     </div>
                 </div>
             </div>
         </div>
-        <Paginate class="mt-20" :links="users.links" />
+        <Paginate :toggle="toggle" class="mt-20" :links="groups.links" />
     </div>
 </template>

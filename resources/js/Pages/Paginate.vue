@@ -1,7 +1,13 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
-defineProps({
+import { onMounted } from "vue";
+let props = defineProps({
     links: Array,
+    toggle: Boolean,
+});
+
+onMounted(() => {
+    console.log(props.toggle);
 });
 </script>
 
@@ -13,6 +19,7 @@ defineProps({
                     v-if="!link.label.includes('&')"
                     :href="link.url ? link.url : ''"
                     v-html="link.label"
+                    :data="{ toggle: toggle }"
                     :class="{
                         'px-4 py-2 rounded ': true,
                         'bg-gray-50 text-black border': !link.active,
@@ -23,6 +30,7 @@ defineProps({
                     v-else
                     :href="link.url ? link.url : ''"
                     v-html="link.label"
+                    :data="{ toggle: toggle }"
                     :class="{
                         'px-4 py-2 rounded text-white': true,
                         'bg-gray-500': !link.url,
@@ -31,5 +39,6 @@ defineProps({
                 />
             </div>
         </div>
+        {{ toggle }}
     </div>
 </template>

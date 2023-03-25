@@ -1,18 +1,27 @@
 <script setup>
 import { Link, Head } from "@inertiajs/vue3";
+import { ref } from "vue";
+import Groups from "./Groups.vue";
 
 import Users from "./Users.vue";
 
 let props = defineProps({
     users: Object,
     groups: Object,
+    toggle: {
+        type: Boolean,
+        default: false,
+    },
 });
+
+let toggleUsersGroups = ref(props.toggle ? props.toggle : false);
 </script>
 <template>
     <Head title="Users" />
 
     <div class="flex items-center w-screen justify-center h-[91vh]">
         <div class="h-[80vh]">
+            {{ toggleUsersGroups }}
             <div v-if="users.data.length > 0">
                 <div class="relative mb-3">
                     <Link
@@ -28,6 +37,7 @@ let props = defineProps({
                             id="Toggle3"
                             type="checkbox"
                             class="hidden peer"
+                            v-model="toggleUsersGroups"
                         />
                         <span
                             class="px-4 py-2 rounded-l-md bg-violet-400 peer-checked:bg-gray-300"
@@ -39,7 +49,16 @@ let props = defineProps({
                         >
                     </label>
                 </div>
-                <Users :users="users" />
+                <Users
+                    :toggle="toggleUsersGroups"
+                    :users="users"
+                    v-if="!toggleUsersGroups"
+                />
+                <Groups
+                    :toggle="toggleUsersGroups"
+                    :groups="toggleUsersGroups"
+                    v-else
+                />
             </div>
             <div
                 v-else

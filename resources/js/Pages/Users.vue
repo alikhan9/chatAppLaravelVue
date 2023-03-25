@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 
 defineProps({
     users: Object,
+    toggle: Boolean,
 });
 
 function sendRequest(id) {
@@ -56,6 +57,6 @@ function sendRequest(id) {
                 </div>
             </div>
         </div>
-        <Paginate class="mt-20" :links="users.links" />
+        <Paginate class="mt-20" :toggle="toggle" :links="users.links" />
     </div>
 </template>
