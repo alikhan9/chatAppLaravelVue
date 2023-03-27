@@ -65,7 +65,10 @@ watch(
                 :class="{
                     'grid mb-4 mt-5 items-center gap-1': true,
                     'justify-end': message.from == $page.props.auth.user.id,
-                    'justify-start': message.to == $page.props.auth.user.id,
+                    'justify-start':
+                        message.to == $page.props.auth.user.id ||
+                        (!useMessages.toUser &&
+                            message.from != $page.props.auth.user.id),
                 }"
             >
                 <div
@@ -74,13 +77,17 @@ watch(
                         'mr-2 bg-blue-400 ':
                             message.from == $page.props.auth.user.id,
                         'ml-2 bg-gray-400':
-                            message.to == $page.props.auth.user.id,
+                            message.to == $page.props.auth.user.id ||
+                            (!useMessages.toUser &&
+                                message.from != $page.props.auth.user.id),
                     }"
                 >
                     {{
                         useMessages.toUser
                             ? message.message
-                            : message.user.name + " : " + message.message
+                            : message.from != $page.props.auth.user.id
+                            ? message.user.name + " : " + message.message
+                            : message.message
                     }}
                 </div>
                 <div class="flex justify-end">
