@@ -12,8 +12,8 @@ return new class () extends Migration {
     {
         Schema::create('private_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('from')->constrained('users');
-            $table->foreignId('to')->constrained('users');
+            $table->foreignId('from')->constrained('users')->onDelete('cascade');
+            $table->foreignId('to')->constrained('users')->onDelete('cascade');
             $table->text('message');
             $table->timestamps();
         });

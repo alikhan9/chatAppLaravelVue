@@ -33,7 +33,7 @@ watch(toggleUsersGroups, (newValue, oldValue) => {
 
     <div class="flex items-center w-screen justify-center h-[91vh]">
         <div class="h-[80vh]">
-            <div v-if="users.data.length > 0">
+            <div v-if="users.data.length > 0 || groups.data.length > 0">
                 <div class="relative mb-3">
                     <Link
                         class="rounded bg-red-500 px-4 py-2"

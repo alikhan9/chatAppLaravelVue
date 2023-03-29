@@ -1,13 +1,11 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
-import { watch, onBeforeMount } from "vue";
+import { watch, onBeforeMount, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import Swal from "sweetalert2";
 import Messages from "./Messages.vue";
 import { useMessagesStore } from "@/Stores/useMessagesStore.js";
-
-let useMessages = useMessagesStore();
 
 let props = defineProps({
     users: Array,
@@ -16,6 +14,20 @@ let props = defineProps({
     toUser: Boolean,
     currentFriend: String,
     groups: Array,
+});
+
+let useMessages = useMessagesStore();
+let filter = ref("");
+let filteredFriends = ref(props.friends);
+let filteredGroups = ref(props.groups);
+
+watch(filter, async (newValue, oldValue) => {
+    filteredFriends = props.friends.filter((user) =>
+        user.name.toLowerCase().includes(newValue.toLowerCase())
+    );
+    filteredGroups = props.groups.filter((group) =>
+        group.name.toLowerCase().includes(newValue.toLowerCase())
+    );
 });
 
 onBeforeMount(() => {
@@ -44,13 +56,30 @@ const swalCustom = Swal.mixin({
     buttonsStyling: false,
 });
 
-function valideDeleteGroup(id, name) {
+function validateLeaveGroup(id, name) {
     swalCustom
         .fire({
-            html:
-                "Are you sure you want to remove " +
-                name +
-                " from your group list?",
+            html: "Are you sure you want to leave " + name + "?",
+            title: "Confirm",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            reverseButtons: true,
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                router.delete("/leaveGroup/" + id, {
+                    preserveScroll: true,
+                });
+            }
+        });
+}
+
+function validateDeleteGroup(id, name) {
+    swalCustom
+        .fire({
+            html: "Are you sure you want to delete " + name + "?",
             title: "Confirm",
             icon: "warning",
             showCancelButton: true,
@@ -66,6 +95,7 @@ function valideDeleteGroup(id, name) {
             }
         });
 }
+
 function valideDeleteFriend(id, name) {
     swalCustom
         .fire({
@@ -95,90 +125,99 @@ function valideDeleteFriend(id, name) {
     <div class="h-[91vh] shadow-lg rounded-lg">
         <!-- Chatting -->
         <div class="flex flex-row justify-between bg-white h-full">
-            <!-- chat list -->
             <div
                 class="flex flex-col w-2/5 border-r-2 overflow-y-auto scrollbar-hide"
             >
-                <!-- search compt -->
                 <div class="border-b-2 py-4 px-2">
                     <input
+                        v-model="filter"
                         type="text"
-                        placeholder="search chatting"
+                        placeholder="filter..."
                         class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
                     />
                 </div>
                 <!-- end search compt -->
-                <!-- user list -->
-                <div class="border-b border-dashed">
-                    <div
-                        v-for="(group, index) in groups"
-                        :key="index"
-                        class="flex border-b-2 items-center justify-between py-4 px-2"
-                    >
-                        <Link
-                            :href="route('home', { group_id: group.id })"
-                            preserve-scroll
-                            preserve-state
-                            class="flex flex-row justify-center items-center w-[90%]"
-                        >
-                            <div class="w-1/4">
-                                <img
-                                    src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                    class="object-cover h-12 w-12 rounded-full"
-                                    alt=""
-                                />
-                            </div>
-                            <div class="w-full">
-                                <div class="text-lg font-semibold">
-                                    {{ group.name }}
-                                </div>
-                                <span class="text-gray-500"
-                                    >Pick me at 9:00 Am</span
-                                >
-                            </div>
-                        </Link>
-                        <Dropdown width="20">
-                            <template #trigger>
-                                <span
-                                    class="inline-flex rounded-md hover:cursor-pointer"
-                                >
-                                    <unicon
-                                        name="ellipsis-v"
-                                        fill="gray"
-                                    ></unicon>
-                                </span>
-                            </template>
-                            <template #content>
-                                <div class="text-center flex-col flex gap-2">
-                                    <Link
-                                        :href="
-                                            route('groupProfile', {
-                                                id: group.id,
-                                            })
-                                        "
-                                        class="pb-2 w-full text-blue-500 shadow-md"
-                                    >
-                                        Profile
-                                    </Link>
-                                    <button
-                                        @click="
-                                            valideDeleteGroup(
-                                                group.id,
-                                                group.name
-                                            )
-                                        "
-                                        class="text-red-500"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </template>
-                        </Dropdown>
-                    </div>
-                </div>
 
+                <!-- group list -->
                 <div
-                    v-for="(friend, index) in friends"
+                    v-for="(group, index) in filteredGroups"
+                    :key="index"
+                    class="flex border-b-2 items-center justify-between py-4 px-2"
+                >
+                    <Link
+                        :href="route('home', { group_id: group.id })"
+                        preserve-scroll
+                        preserve-state
+                        class="flex flex-row justify-center items-center w-[90%]"
+                    >
+                        <div class="w-1/4">
+                            <img
+                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
+                                class="object-cover h-12 w-12 rounded-full"
+                                alt=""
+                            />
+                        </div>
+                        <div class="w-full">
+                            <div class="text-lg font-semibold">
+                                {{ group.name }}
+                            </div>
+                            <span class="text-gray-500"
+                                >Pick me at 9:00 Am</span
+                            >
+                        </div>
+                    </Link>
+                    <Dropdown width="20">
+                        <template #trigger>
+                            <span
+                                class="inline-flex rounded-md hover:cursor-pointer"
+                            >
+                                <unicon name="ellipsis-v" fill="gray"></unicon>
+                            </span>
+                        </template>
+                        <template #content>
+                            <div class="text-center flex-col flex gap-2">
+                                <Link
+                                    :href="
+                                        route('groupProfile', {
+                                            id: group.id,
+                                        })
+                                    "
+                                    class="pb-2 w-full text-blue-500 shadow-md"
+                                >
+                                    Profile
+                                </Link>
+                                <button
+                                    v-if="
+                                        $page.props.auth.user.id == group.owner
+                                    "
+                                    @click="
+                                        validateDeleteGroup(
+                                            group.id,
+                                            group.name
+                                        )
+                                    "
+                                    class="text-red-500"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    v-else
+                                    @click="
+                                        validateLeaveGroup(group.id, group.name)
+                                    "
+                                    class="text-red-500"
+                                >
+                                    Leave
+                                </button>
+                            </div>
+                        </template>
+                    </Dropdown>
+                </div>
+                <!-- end group list -->
+
+                <!-- user list -->
+                <div
+                    v-for="(friend, index) in filteredFriends"
                     :key="index"
                     class="flex border-b-2 items-center justify-between py-4 px-2"
                 >
@@ -239,13 +278,11 @@ function valideDeleteFriend(id, name) {
                         </template>
                     </Dropdown>
                 </div>
-
                 <!-- end user list -->
             </div>
-            <!-- end chat list -->
-            <!-- message -->
+
             <Messages :id="currentFriend" />
-            <!-- end message -->
+
             <div class="w-2/5 border-l-2 px-5">
                 <div class="flex flex-col">
                     <div class="font-semibold text-xl py-4">

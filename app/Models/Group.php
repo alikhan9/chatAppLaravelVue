@@ -25,4 +25,9 @@ class Group extends Model
     {
         return $this->hasMany(PublicMessage::class, 'to');
     }
+
+    public function members()
+    {
+        return $this->hasMany(GroupMember::class, 'group_id');
+    }
 }

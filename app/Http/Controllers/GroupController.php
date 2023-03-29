@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupMember;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
+    public function profile(Group $group)
+    {
+        return Inertia::render('GroupProfile', [
+            'group' => $group,
+            'members' => $group->members
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -36,8 +45,7 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        dd($group);
         $group->delete();
-        return redirect()->back();
+        return redirect('/');
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\PrivateMessageController;
 use App\Http\Controllers\PublicMessageController;
 use App\Models\Group;
@@ -22,7 +23,7 @@ Route::get('/', function () {
                 })
             : (
                 request()->group_id ?
-                Group::find(request()->group_id)->messages
+                Group::find(request()->group_id)?->messages
                 : []
             ),
             'currentFriend' => request()->id ? request()->id : request()->group_id,
@@ -92,8 +93,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/addGroup', [GroupController::class, 'store']);
     Route::post('/joinGroup', [GroupController::class, 'join']);
-    Route::delete('/deleteGroup/{id}', [GroupController::class, 'destroy']);
-    Route::get('/groupProfile', [GroupController::class, 'index'])->name('groupProfile');
+    Route::delete('/deleteGroup/{group}', [GroupController::class, 'destroy']);
+    Route::delete('/leaveGroup/{group_id}', [GroupMemberController::class, 'destroy']);
+    Route::get('/groupProfile/{group}', [GroupController::class, 'profile'])->name('groupProfile');
 });
 
 

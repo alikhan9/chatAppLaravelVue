@@ -23,9 +23,9 @@ class GroupMemberController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(GroupMember $groupMember)
+    public function destroy()
     {
-        $groupMember->delete();
+        GroupMember::where('user_id', '=', auth()->user()->id)->where('group_id', '=', request()->group_id)->delete();
         return redirect()->back();
     }
 }
