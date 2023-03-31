@@ -7,6 +7,9 @@ use App\Models\Group;
 use App\Models\User;
 use App\Notifications\FriendRequestNotification;
 use App\Notifications\UserNotification;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class FriendController extends Controller
@@ -80,8 +83,25 @@ class FriendController extends Controller
         return redirect()->back();
     }
 
-    public function acceptFriend()
+    public function acceptFriend(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'user_id' => Rule::unique('friends')->where(function ($query) use ($request) {
+                return $query->where('friend_id', $request->group_id);
+            }),
+            'friend_id' => Rule::unique('friends')->where(function ($query) use ($request) {
+                return $query->where('user_id', $request->group_id);
+            }),
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ]);
+        }
+
         Friend::where('user_id', '=', request()->user_id)
         ->where('friend_id', '=', auth()->user()->id)
         ->update(['accepted' => true]);

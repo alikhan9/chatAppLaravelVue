@@ -12,4 +12,11 @@ class GroupMember extends Model
         'user_id',
         'group_id',
     ];
+
+    protected $with = ['user'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'name', 'email');
+    }
 }

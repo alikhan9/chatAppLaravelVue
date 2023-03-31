@@ -13,7 +13,8 @@ class GroupController extends Controller
     {
         return Inertia::render('GroupProfile', [
             'group' => $group,
-            'members' => $group->members
+            'members' => $group->members,
+            'user_friends' => auth()->user()->friends
         ]);
     }
 
