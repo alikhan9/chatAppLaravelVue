@@ -85,8 +85,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/refuseFriend', [FriendController::class, 'refuseFriend']);
     Route::delete('/deleteFriend/{friend_id}', [FriendController::class, 'deleteFriend']);
 
-    Route::post('/notifications/markAsRead', [NotificationController::class,'markNotificationsAsRead']);
     Route::delete('/notifications/delete', [NotificationController::class,'destroy']);
+    Route::post('/notifications/markAsRead', [NotificationController::class,'markNotificationsAsRead']);
 
     Route::post('/message/private', [PrivateMessageController::class,'store']);
     Route::post('/message/public', [PublicMessageController::class,'store']);

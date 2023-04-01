@@ -64,7 +64,7 @@ function sendMarkNotif() {
 }
 
 function sendDeleteNotifs() {
-    router.delete("notifications/delete");
+    router.delete("/notifications/delete");
 }
 
 const swalCustom = Swal.mixin({

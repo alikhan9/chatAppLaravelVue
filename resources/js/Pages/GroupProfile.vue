@@ -34,7 +34,7 @@ function convertDateToHuman(date) {
 </script>
 
 <template>
-    <Head title="Public Profile" />
+    <Head title="Group Profile" />
     <div class="h-[80vh] flex justify-center gap-4 items-center">
         <div class="border rounded shadow-lg min-h-[31vh]">
             <h1 class="px-8 pt-4 text-xl text-blue-500">User info</h1>

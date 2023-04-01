@@ -71,6 +71,7 @@ function validateLeaveGroup(id, name) {
             if (result.isConfirmed) {
                 router.delete("/leaveGroup/" + id, {
                     preserveScroll: true,
+                    only: ["groups"],
                 });
             }
         });
@@ -91,6 +92,7 @@ function validateDeleteGroup(id, name) {
             if (result.isConfirmed) {
                 router.delete("/deleteGroup/" + id, {
                     preserveScroll: true,
+                    only: ["groups"],
                 });
             }
         });
@@ -114,6 +116,7 @@ function valideDeleteFriend(id, name) {
             if (result.isConfirmed) {
                 router.delete("/deleteFriend/" + id, {
                     preserveScroll: true,
+                    only: ["friends"],
                 });
             }
         });
