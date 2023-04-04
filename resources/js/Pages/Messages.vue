@@ -90,7 +90,15 @@ watch(
                             : message.message
                     }}
                 </div>
-                <div class="flex justify-end">
+                <div
+                    :class="{
+                        'text-sm px-4': true,
+                        'flex justify-end':
+                            message.from == $page.props.auth.user.id,
+                        'justify-start':
+                            message.from != $page.props.auth.user.id,
+                    }"
+                >
                     {{ convertDateToHuman(message.created_at) }}
                 </div>
             </div>

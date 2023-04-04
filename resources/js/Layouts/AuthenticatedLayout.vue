@@ -1,13 +1,29 @@
 <script setup>
 import Menu from "@/Pages/Menu.vue";
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { useMessagesStore } from "@/Stores/useMessagesStore";
 
 let useMessages = useMessagesStore();
+
 let props = defineProps({
     search: String,
 });
+
+watch(
+    () => useMessages.group,
+    (newGroup, oldGroup) => {
+        if (oldGroup) {
+            window.Echo.leave("chat-public-" + oldGroup);
+            window.Echo.private("chat-public-" + newGroup).listen(
+                "PublicMessageSent",
+                (e) => {
+                    useMessages.addMessage(e.publicMessage);
+                }
+            );
+        }
+    }
+);
 
 onMounted(() => {
     window.Echo.private(
@@ -23,6 +39,14 @@ onMounted(() => {
                 useMessages.addMessage(e.privateMessage);
         }
     );
+
+    if (!useMessages.toUser)
+        window.Echo.private("chat-public-" + useMessages.group).listen(
+            "PublicMessageSent",
+            (e) => {
+                useMessages.addMessage(e.publicMessage);
+            }
+        );
 });
 </script>
 

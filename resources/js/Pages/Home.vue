@@ -14,6 +14,7 @@ let props = defineProps({
     toUser: Boolean,
     currentFriend: String,
     groups: Array,
+    group: String,
 });
 
 let useMessages = useMessagesStore();
@@ -33,12 +34,19 @@ watch(filter, async (newValue, oldValue) => {
 onBeforeMount(() => {
     useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;
+    useMessages.group = props.group;
 });
 
 watch(
     () => props.messages,
     (newValue, oldValue) => {
         useMessages.setMessages(newValue);
+    }
+);
+watch(
+    () => props.group,
+    (newValue, oldValue) => {
+        useMessages.group = newValue;
     }
 );
 watch(

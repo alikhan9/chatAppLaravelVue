@@ -17,6 +17,11 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+
+Broadcast::channel('chat-public-{groupId}', function ($user, $groupId) {
+    return true;
+});
+
 Broadcast::channel('chat-{userId}', function ($user, $userId) {
     // Return true if the user id matches the parameter
     return (int) $user->id === (int) $userId;

@@ -3,12 +3,13 @@
 namespace App\Events;
 
 use App\Models\PublicMessage;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PublicMessageSent
+class PublicMessageSent implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -29,10 +30,10 @@ class PublicMessageSent
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return Channel
+     * @return PrivateChannel
      */
     public function broadcastOn()
     {
-        return new Channel('chat-public-'. $this->publicMessage->to);
+        return new PrivateChannel('chat-public-'. $this->publicMessage->to);
     }
 }

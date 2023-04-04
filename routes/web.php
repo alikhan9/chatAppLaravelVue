@@ -36,7 +36,8 @@ Route::get('/', function () {
                     ->get();
                 }
             )->get()],
-            'toUser' => request()->id ? true : false
+            'toUser' => request()->id ? true : false,
+            'group' => request()->group_id
         ]
     );
 })->middleware(['auth', 'verified'])->name('home');
