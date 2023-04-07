@@ -27,7 +27,6 @@ function sendMessage() {
         axios(options).then((response) => {
             useMessages.addMessage(response.data);
             currentMessage.value = "";
-            scrollToBottom();
             sending.value = false;
         });
     }
@@ -48,9 +47,10 @@ const scrollToBottom = () => {
 watch(
     useMessagesStore().messages,
     () => {
+        console.log("nani");
         setTimeout(() => {
             scrollToBottom();
-        }, 1);
+        }, 10);
     },
     { deep: true }
 );

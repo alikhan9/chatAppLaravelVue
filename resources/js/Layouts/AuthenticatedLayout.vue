@@ -13,7 +13,7 @@ let props = defineProps({
 watch(
     () => useMessages.group,
     (newGroup, oldGroup) => {
-        if (oldGroup) {
+        if (Number.isInteger(parseInt(oldGroup))) {
             window.Echo.leave("chat-public-" + oldGroup);
             window.Echo.private("chat-public-" + newGroup).listen(
                 "PublicMessageSent",

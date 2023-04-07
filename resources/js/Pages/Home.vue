@@ -14,7 +14,7 @@ let props = defineProps({
     toUser: Boolean,
     currentFriend: String,
     groups: Array,
-    group: String,
+    groupId: String,
 });
 
 let useMessages = useMessagesStore();
@@ -34,7 +34,7 @@ watch(filter, async (newValue, oldValue) => {
 onBeforeMount(() => {
     useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;
-    useMessages.group = props.group;
+    useMessages.group = props.groupId;
 });
 
 watch(
@@ -44,7 +44,7 @@ watch(
     }
 );
 watch(
-    () => props.group,
+    () => props.groupId,
     (newValue, oldValue) => {
         useMessages.group = newValue;
     }
@@ -137,7 +137,7 @@ function valideDeleteFriend(id, name) {
         <!-- Chatting -->
         <div class="flex flex-row justify-between bg-white h-full">
             <div
-                class="flex flex-col w-2/5 border-r-2 overflow-y-auto scrollbar-hide"
+                class="flex flex-col w-1/4 border-r-2 overflow-y-auto scrollbar-hide"
             >
                 <div class="border-b-2 py-4 px-2">
                     <input
@@ -147,19 +147,23 @@ function valideDeleteFriend(id, name) {
                         class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
                     />
                 </div>
+
                 <!-- end search compt -->
 
                 <!-- group list -->
                 <div
                     v-for="(group, index) in filteredGroups"
                     :key="index"
-                    class="flex border-b-2 items-center justify-between py-4 px-2"
+                    :class="{
+                        'flex border-b-2 items-center justify-between ': true,
+                        'bg-blue-300': !toUser & (groupId == group.id),
+                    }"
                 >
                     <Link
                         :href="route('home', { group_id: group.id })"
                         preserve-scroll
                         preserve-state
-                        class="flex flex-row justify-center items-center w-[90%]"
+                        class="flex flex-row justify-center items-center w-[90%] py-4 px-2"
                     >
                         <div class="w-1/4">
                             <img
@@ -172,12 +176,10 @@ function valideDeleteFriend(id, name) {
                             <div class="text-lg font-semibold">
                                 {{ group.name }}
                             </div>
-                            <span class="text-gray-500"
-                                >Pick me at 9:00 Am</span
-                            >
+                            <div class="text-sm">Nani</div>
                         </div>
                     </Link>
-                    <Dropdown width="20">
+                    <Dropdown width="20" class="px-2">
                         <template #trigger>
                             <span
                                 class="inline-flex rounded-md hover:cursor-pointer"
@@ -230,13 +232,16 @@ function valideDeleteFriend(id, name) {
                 <div
                     v-for="(friend, index) in filteredFriends"
                     :key="index"
-                    class="flex border-b-2 items-center justify-between py-4 px-2"
+                    :class="{
+                        'flex border-b-2 items-center justify-between ': true,
+                        'bg-blue-300': toUser & (currentFriend == friend.id),
+                    }"
                 >
                     <Link
                         :href="route('home', { id: friend.id })"
                         preserve-scroll
                         preserve-state
-                        class="flex flex-row justify-center items-center w-[90%]"
+                        class="flex flex-row justify-center items-center w-[90%] px-2 py-4"
                     >
                         <div class="w-1/4">
                             <img
@@ -249,12 +254,9 @@ function valideDeleteFriend(id, name) {
                             <div class="text-lg font-semibold">
                                 {{ friend.name }}
                             </div>
-                            <span class="text-gray-500"
-                                >Pick me at 9:00 Am</span
-                            >
                         </div>
                     </Link>
-                    <Dropdown width="20">
+                    <Dropdown width="20" class="px-2">
                         <template #trigger>
                             <span
                                 class="inline-flex rounded-md hover:cursor-pointer"
@@ -293,24 +295,6 @@ function valideDeleteFriend(id, name) {
             </div>
 
             <Messages :id="currentFriend" />
-
-            <div class="w-2/5 border-l-2 px-5">
-                <div class="flex flex-col">
-                    <div class="font-semibold text-xl py-4">
-                        Mern Stack Group
-                    </div>
-                    <img
-                        src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                        class="object-cover rounded-xl h-64"
-                        alt=""
-                    />
-                    <div class="font-semibold py-4">Created 22 Sep 2021</div>
-                    <div class="font-light">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Deserunt, perspiciatis!
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
