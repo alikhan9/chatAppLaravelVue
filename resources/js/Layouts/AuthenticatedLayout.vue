@@ -30,6 +30,8 @@ onMounted(() => {
         "App.Models.User." + usePage().props.auth.user.id
     ).notification((notif) => {
         usePage().props.notifications.push(notif);
+        if (notif?.data?.message?.includes("accepted"))
+            useMessages.userToAdd = notif.data.user;
     });
 
     window.Echo.private("chat-" + usePage().props.auth.user.id).listen(

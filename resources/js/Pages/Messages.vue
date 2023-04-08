@@ -86,7 +86,7 @@ watch(
                         useMessages.toUser
                             ? message.message
                             : message.from != $page.props.auth.user.id
-                            ? message.user.name + " : " + message.message
+                            ? message?.user?.name + " : " + message.message
                             : message.message
                     }}
                 </div>

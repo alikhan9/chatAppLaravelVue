@@ -31,6 +31,13 @@ watch(filter, async (newValue, oldValue) => {
     );
 });
 
+watch(
+    () => useMessages.userToAdd,
+    (newFriend, oldFriend) => {
+        if (newFriend?.id !== null) props.friends.push(newFriend);
+    }
+);
+
 onBeforeMount(() => {
     useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;

@@ -7,6 +7,7 @@ export let useMessagesStore = defineStore("private-messages", {
             currentChatId: String,
             toUser: Boolean,
             group: String,
+            userToAdd: Object,
         };
     },
     actions: {

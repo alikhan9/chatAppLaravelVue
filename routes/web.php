@@ -7,12 +7,25 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\PrivateMessageController;
 use App\Http\Controllers\PublicMessageController;
+use App\Models\Friend;
 use App\Models\Group;
+use App\Models\GroupMember;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+
+    if(request()->id !== null &&Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0) {
+        return redirect('/');
+    }
+    if(request()->group_id !== null &&
+    GroupMember::where('user_id', '=', auth()->user()->id)
+    ->where('group_id', '=', request()->group_id)
+    ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->where('id', '=', request()->group_id)->select('id'))
+    ->get()->count() == 0) {
+        return redirect('/');
+    }
     return Inertia::render(
         'Home',
         [
@@ -40,6 +53,7 @@ Route::get('/', function () {
             'groupId' => request()->group_id
         ]
     );
+
 })->middleware(['auth', 'verified'])->name('home');
 
 
