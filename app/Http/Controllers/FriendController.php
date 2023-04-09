@@ -135,6 +135,9 @@ class FriendController extends Controller
         ->whereIn('friend_id', [request()->friend_id,auth()->user()->id])
         ->delete();
 
+        $user = User::find(request()->friend_id);
+        $user->notify(new UserNotification(auth()->user()->name . ' has removed you from his friends list.'));
+
         return redirect()->back();
     }
 }

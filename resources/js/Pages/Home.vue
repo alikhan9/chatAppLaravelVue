@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import { watch, onBeforeMount, ref } from "vue";
-import { Link, router } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import Swal from "sweetalert2";
 import Messages from "./Messages.vue";
@@ -37,6 +37,15 @@ watch(
         if (newFriend?.id !== null) props.friends.push(newFriend);
     }
 );
+watch(
+    () => useMessages.userToRemove,
+    (userToRemove, old) => {
+        if (userToRemove?.id !== null)
+            usePage().props.friends = props.friends.filter(
+                (u) => u.id != userToRemove.id
+            );
+    }
+);
 
 onBeforeMount(() => {
     useMessages.setMessages(props.messages);
@@ -48,6 +57,12 @@ watch(
     () => props.messages,
     (newValue, oldValue) => {
         useMessages.setMessages(newValue);
+    }
+);
+watch(
+    () => props.friends,
+    (newValue, oldValue) => {
+        filteredFriends.value = newValue;
     }
 );
 watch(
@@ -131,7 +146,6 @@ function valideDeleteFriend(id, name) {
             if (result.isConfirmed) {
                 router.delete("/deleteFriend/" + id, {
                     preserveScroll: true,
-                    only: ["friends"],
                 });
             }
         });

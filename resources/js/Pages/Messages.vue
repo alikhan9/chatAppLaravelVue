@@ -45,12 +45,11 @@ const scrollToBottom = () => {
 };
 
 watch(
-    useMessagesStore().messages,
+    () => useMessagesStore().messages,
     () => {
-        console.log("nani");
         setTimeout(() => {
             scrollToBottom();
-        }, 10);
+        }, 1);
     },
     { deep: true }
 );

@@ -32,17 +32,22 @@ onMounted(() => {
         usePage().props.notifications.push(notif);
         if (notif?.data?.message?.includes("accepted"))
             useMessages.userToAdd = notif.data.user;
+        if (notif?.data?.message?.includes("removed"))
+            useMessages.userToRemove = notif.data.user;
     });
 
     window.Echo.private("chat-" + usePage().props.auth.user.id).listen(
         "MessageSent",
         (e) => {
-            if (e.from == useMessages.currentFriend)
+            if (
+                e.from == useMessages.currentFriend &&
+                usePage().url.includes("id=" + useMessages.currentFriend)
+            )
                 useMessages.addMessage(e.privateMessage);
         }
     );
 
-    if (!useMessages.toUser)
+    if (usePage().url.includes("group_id=" + useMessages.group))
         window.Echo.private("chat-public-" + useMessages.group).listen(
             "PublicMessageSent",
             (e) => {
