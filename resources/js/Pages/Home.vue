@@ -84,6 +84,12 @@ watch(
     }
 );
 watch(
+    () => props.groups,
+    (newValue, oldValue) => {
+        filteredGroups = newValue;
+    }
+);
+watch(
     () => props.groupId,
     (newValue, oldValue) => {
         useMessages.group = newValue;
