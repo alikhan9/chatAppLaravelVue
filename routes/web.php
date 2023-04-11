@@ -16,14 +16,14 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
 
-    if(request()->id !== null &&Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0) {
+    if(request()->id !== null && Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0) {
         return redirect('/');
     }
 
     if(request()->group_id !== null &&
     GroupMember::where('user_id', '=', auth()->user()->id)
     ->where('group_id', '=', request()->group_id)
-    ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->where('id', '=', request()->group_id)->select('id'))
+    ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->select('id'))
     ->get()->count() == 0) {
         return redirect('/');
     }
@@ -41,7 +41,7 @@ Route::get('/', function () {
                 Group::find(request()->group_id)?->messages
                 : []
             ),
-            'currentFriend' => request()->id ? request()->id : request()->group_id,
+            'currentChatId' => request()->id ? request()->id : request()->group_id,
             'groups' => [...auth()->user()->groups,...Group::whereIn(
                 'id',
                 function ($query) {
@@ -108,7 +108,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/message/private', [PrivateMessageController::class,'store']);
     Route::post('/message/public', [PublicMessageController::class,'store']);
 
-    Route::post('/addGroup', [GroupController::class, 'store']);
+    Route::post('/createGroup', [GroupController::class, 'store']);
     Route::post('/joinGroup', [GroupController::class, 'join']);
     Route::delete('/deleteGroup/{group}', [GroupController::class, 'destroy']);
     Route::delete('/leaveGroup/{group_id}', [GroupMemberController::class, 'destroy']);

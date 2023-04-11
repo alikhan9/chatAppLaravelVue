@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\GroupMember;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GroupController extends Controller
@@ -21,14 +20,14 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store()
     {
-        Group::create([
+        $group = Group::create([
             'owner' => auth()->user()->id,
             'name' => request()->group_name
         ]);
 
-        return redirect()->back();
+        return $group;
     }
 
     public function join()
@@ -47,6 +46,6 @@ class GroupController extends Controller
     public function destroy(Group $group)
     {
         $group->delete();
-        return redirect('/');
+        return true;
     }
 }

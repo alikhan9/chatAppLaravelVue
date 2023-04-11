@@ -9,6 +9,7 @@ export let useMessagesStore = defineStore("private-messages", {
             group: String,
             userToAdd: Object,
             userToRemove: Object,
+            groupToAdd: Object,
         };
     },
     actions: {

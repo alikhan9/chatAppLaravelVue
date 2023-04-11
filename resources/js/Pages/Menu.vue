@@ -5,6 +5,7 @@ import { ref, watch, computed } from "vue";
 import debounce from "lodash/debounce";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import { useMessagesStore } from "@/Stores/useMessagesStore";
 
 let props = defineProps({
     search: String,
@@ -87,7 +88,9 @@ function sendCreateGroup() {
         confirmButtonText: "Submit",
         showLoaderOnConfirm: true,
         preConfirm: (group_name) => {
-            router.post("/addGroup", { group_name }, { only: ["groups"] });
+            axios.post("/createGroup", { group_name }).then((response) => {
+                useMessagesStore().groupToAdd = response.data;
+            });
         },
         allowOutsideClick: () => !Swal.isLoading(),
     });

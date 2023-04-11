@@ -13,6 +13,7 @@ import {
     uniEllipsisV,
     uniBell,
     uniUsersAlt,
+    uniUser,
 } from "vue-unicons/dist/icons";
 
 Unicon.add([
@@ -21,6 +22,7 @@ Unicon.add([
     uniEllipsisV,
     uniBell,
     uniUsersAlt,
+    uniUser,
 ]);
 
 createInertiaApp({

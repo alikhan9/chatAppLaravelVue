@@ -26,6 +26,6 @@ class GroupMemberController extends Controller
     public function destroy()
     {
         GroupMember::where('user_id', '=', auth()->user()->id)->where('group_id', '=', request()->group_id)->delete();
-        return redirect()->back();
+        return true;
     }
 }

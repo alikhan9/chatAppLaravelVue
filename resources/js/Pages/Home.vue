@@ -12,7 +12,7 @@ let props = defineProps({
     friends: Array,
     messages: Array,
     toUser: Boolean,
-    currentFriend: String,
+    currentChatId: String,
     groups: Array,
     groupId: String,
 });
@@ -20,13 +20,21 @@ let props = defineProps({
 let useMessages = useMessagesStore();
 let filter = ref("");
 let filteredFriends = ref(props.friends);
+let initialGroups = ref(props.groups);
 let filteredGroups = ref(props.groups);
+
+watch(
+    () => useMessages.currentChatId,
+    (newChatId, oldChatId) => {
+        useMessages.currentChatId = newChatId;
+    }
+);
 
 watch(filter, async (newValue, oldValue) => {
     filteredFriends = props.friends.filter((user) =>
         user.name.toLowerCase().includes(newValue.toLowerCase())
     );
-    filteredGroups = props.groups.filter((group) =>
+    filteredGroups = initialGroups.value.filter((group) =>
         group.name.toLowerCase().includes(newValue.toLowerCase())
     );
 });
@@ -35,6 +43,15 @@ watch(
     () => useMessages.userToAdd,
     (newFriend, oldFriend) => {
         if (newFriend?.id !== null) props.friends.push(newFriend);
+    }
+);
+watch(initialGroups, (newGroups, oldGroups) => {
+    filteredGroups.value = newGroups;
+});
+watch(
+    () => useMessages.groupToAdd,
+    (newGroup, oldGroup) => {
+        if (newGroup.id !== null) props.groups.push(newGroup);
     }
 );
 watch(
@@ -51,6 +68,7 @@ onBeforeMount(() => {
     useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;
     useMessages.group = props.groupId;
+    useMessages.currentChatId = props.currentChatId;
 });
 
 watch(
@@ -93,15 +111,18 @@ function validateLeaveGroup(id, name) {
             title: "Confirm",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Delete",
+            confirmButtonText: "Leave",
             cancelButtonText: "Cancel",
             reverseButtons: true,
         })
         .then((result) => {
             if (result.isConfirmed) {
-                router.delete("/leaveGroup/" + id, {
-                    preserveScroll: true,
-                    only: ["groups"],
+                axios.delete("/leaveGroup/" + id).then((response) => {
+                    if (response.data === 1)
+                        initialGroups.value = initialGroups.value.filter(
+                            (g) => g.id != id
+                        );
+                    else console.log(nani);
                 });
             }
         });
@@ -120,9 +141,11 @@ function validateDeleteGroup(id, name) {
         })
         .then((result) => {
             if (result.isConfirmed) {
-                router.delete("/deleteGroup/" + id, {
-                    preserveScroll: true,
-                    only: ["groups"],
+                axios.delete("/deleteGroup/" + id).then((response) => {
+                    if (response.data)
+                        initialGroups.value = initialGroups.value.filter(
+                            (g) => g.id != id
+                        );
                 });
             }
         });
@@ -186,24 +209,23 @@ function valideDeleteFriend(id, name) {
                         preserve-state
                         class="flex flex-row justify-center items-center w-[90%] py-4 px-2"
                     >
-                        <div class="w-1/4">
-                            <img
-                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                class="object-cover h-12 w-12 rounded-full"
-                                alt=""
+                        <div class="w-1/4 flex justify-center items-center">
+                            <unicon
+                                name="users-alt"
+                                fill="#eab440"
+                                class="border object-cover h-10 w-10 bg-gray-100 border-spacing-8 rounded-full"
                             />
                         </div>
                         <div class="w-full">
                             <div class="text-lg font-semibold">
                                 {{ group.name }}
                             </div>
-                            <div class="text-sm">Nani</div>
                         </div>
                     </Link>
                     <Dropdown width="20" class="px-2">
                         <template #trigger>
                             <span
-                                class="inline-flex rounded-md hover:cursor-pointer"
+                                class="flex items-center hover:cursor-pointer"
                             >
                                 <unicon name="ellipsis-v" fill="gray"></unicon>
                             </span>
@@ -255,7 +277,7 @@ function valideDeleteFriend(id, name) {
                     :key="index"
                     :class="{
                         'flex border-b-2 items-center justify-between ': true,
-                        'bg-blue-300': toUser & (currentFriend == friend.id),
+                        'bg-blue-300': toUser & (currentChatId == friend.id),
                     }"
                 >
                     <Link
@@ -264,11 +286,11 @@ function valideDeleteFriend(id, name) {
                         preserve-state
                         class="flex flex-row justify-center items-center w-[90%] px-2 py-4"
                     >
-                        <div class="w-1/4">
-                            <img
-                                src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                class="object-cover h-12 w-12 rounded-full"
-                                alt=""
+                        <div class="w-1/4 flex justify-center items-center">
+                            <unicon
+                                name="user"
+                                fill="royalblue"
+                                class="border object-cover h-10 w-10 bg-gray-100 border-spacing-8 rounded-full"
                             />
                         </div>
                         <div class="w-full">
@@ -280,7 +302,7 @@ function valideDeleteFriend(id, name) {
                     <Dropdown width="20" class="px-2">
                         <template #trigger>
                             <span
-                                class="inline-flex rounded-md hover:cursor-pointer"
+                                class="flex items-center hover:cursor-pointer"
                             >
                                 <unicon name="ellipsis-v" fill="gray"></unicon>
                             </span>
@@ -315,7 +337,7 @@ function valideDeleteFriend(id, name) {
                 <!-- end user list -->
             </div>
 
-            <Messages :id="currentFriend" />
+            <Messages :id="currentChatId" />
         </div>
     </div>
 </template>

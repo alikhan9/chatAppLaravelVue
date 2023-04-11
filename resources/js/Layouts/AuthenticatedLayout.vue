@@ -13,15 +13,14 @@ let props = defineProps({
 watch(
     () => useMessages.group,
     (newGroup, oldGroup) => {
-        if (Number.isInteger(parseInt(oldGroup))) {
+        if (Number.isInteger(parseInt(oldGroup)))
             window.Echo.leave("chat-public-" + oldGroup);
-            window.Echo.private("chat-public-" + newGroup).listen(
-                "PublicMessageSent",
-                (e) => {
-                    useMessages.addMessage(e.publicMessage);
-                }
-            );
-        }
+        window.Echo.private("chat-public-" + newGroup).listen(
+            "PublicMessageSent",
+            (e) => {
+                useMessages.addMessage(e.publicMessage);
+            }
+        );
     }
 );
 
@@ -39,15 +38,15 @@ onMounted(() => {
     window.Echo.private("chat-" + usePage().props.auth.user.id).listen(
         "MessageSent",
         (e) => {
-            if (
-                e.from == useMessages.currentFriend &&
-                usePage().url.includes("id=" + useMessages.currentFriend)
-            )
+            if (usePage().url.includes("id=" + e.privateMessage.from))
                 useMessages.addMessage(e.privateMessage);
         }
     );
 
-    if (usePage().url.includes("group_id=" + useMessages.group))
+    if (
+        usePage().url.includes("group_id=" + useMessages.group) &&
+        useMessages.group != null
+    )
         window.Echo.private("chat-public-" + useMessages.group).listen(
             "PublicMessageSent",
             (e) => {
