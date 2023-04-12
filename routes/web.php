@@ -18,6 +18,7 @@ Route::get('/', function () {
 
     if(request()->id !== null && Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0) {
         return redirect('/');
+        ;
     }
 
     // if(request()->group_id !== null &&
