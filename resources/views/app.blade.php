@@ -13,9 +13,7 @@
 
     <!-- Scripts -->
     @routes
-    {{-- @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"]) --}}
-    <script src="/public/build/assets/app-1eddbf7e.js"></script>
-    <link rel="stylesheet" href="/public/build/assets/app-bd1022d3.css">
+    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
 </head>
 
