@@ -13,7 +13,10 @@
 
     <!-- Scripts -->
     @routes
-    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+    @vite(['resources/js/app.js'])
+    {{-- <script src="/resources/js/app.js"></script> --}}
+    {{-- <script src="/resources/js/Pages/Auth/Login.vue"></script> --}}
+    {{-- <script src="/resources/js/Pages/Home"></script> --}}
     @inertiaHead
 </head>
 
