@@ -20,13 +20,13 @@ Route::get('/', function () {
         return redirect('/');
     }
 
-    if(request()->group_id !== null &&
-    GroupMember::where('user_id', '=', auth()->user()->id)
-    ->where('group_id', '=', request()->group_id)
-    ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->select('id'))
-    ->get()->count() == 0) {
-        return redirect('/');
-    }
+    // if(request()->group_id !== null &&
+    // GroupMember::where('user_id', '=', auth()->user()->id)
+    // ->where('group_id', '=', request()->group_id)
+    // ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->select('id'))
+    // ->get()->count() == 0) {
+    //     return redirect('/');
+    // }
 
     return Inertia::render(
         'Home',
