@@ -13,7 +13,7 @@ let sending = ref(false);
 const container = ref(null);
 
 function sendMessage() {
-    if (!sending.value && currentMessage.value != "") {
+    if (!sending.value && currentMessage.value != "" && props.id != null) {
         sending.value = true;
         const options = {
             url: useMessages.toUser ? "/message/private" : "/message/public",
