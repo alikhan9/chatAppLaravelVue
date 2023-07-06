@@ -27,6 +27,11 @@ class MessageSent implements ShouldBroadcast
         $this->privateMessage = $message;
     }
 
+    public function via()
+    {
+        return ['broadcast'];
+    }
+
     /**
      * Get the channels the event should broadcast on.
      *

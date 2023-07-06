@@ -139,11 +139,8 @@ function sendCreateGroup() {
                 </template>
                 <template #content>
                     <div class="flex flex-col">
-                        <!-- <DropdownLink :href="route('friends.manage')">
-                            Manage contacts
-                        </DropdownLink> -->
                         <div
-                            class="block w-full px-4 py-2 hover:cursor-pointer text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                            class="block w-full px-4 py-2 hover:cursor-pointer text-left text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                             @click="sendCreateGroup"
                         >
                             Create a group
@@ -257,10 +254,10 @@ function sendCreateGroup() {
                     <span class="inline-flex rounded-md">
                         <button
                             type="button"
-                            class="w-16 h-16 bg-yellow-500 rounded-full text-center text-white font-semibold flex items-center justify-center"
+                            class="w-11 h-11 bg-yellow-500 rounded-full text-center text-white font-semibold flex items-center justify-center"
                         >
                             <span class="truncate max-w-[50px]">{{
-                                $page.props.auth.user.name
+                                $page.props.auth.user.name[0].toUpperCase()
                             }}</span>
                         </button>
                     </span>

@@ -194,7 +194,7 @@ function valideDeleteFriend(id, name) {
                         v-model="filter"
                         type="text"
                         placeholder="filter..."
-                        class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
+                        class="py-2 px-2 border-2 border-gray-300 rounded-2xl w-full"
                     />
                 </div>
 
@@ -205,8 +205,8 @@ function valideDeleteFriend(id, name) {
                     v-for="(group, index) in filteredGroups"
                     :key="index"
                     :class="{
-                        'flex border-b-2 items-center justify-between ': true,
-                        'bg-blue-300': !toUser & (groupId == group.id),
+                        'flex border-b-2 items-center justify-between hover:bg-blue-200 transition': true,
+                        'bg-blue-300 hover:bg-blue-400': !toUser & (groupId == group.id),
                     }"
                 >
                     <Link
@@ -282,8 +282,8 @@ function valideDeleteFriend(id, name) {
                     v-for="(friend, index) in filteredFriends"
                     :key="index"
                     :class="{
-                        'flex border-b-2 items-center justify-between ': true,
-                        'bg-blue-300': toUser & (currentChatId == friend.id),
+                        'flex border-b-2 items-center justify-between hover:bg-blue-200 transition': true,
+                        'bg-blue-300 hover:bg-blue-400': toUser & (currentChatId == friend.id),
                     }"
                 >
                     <Link
