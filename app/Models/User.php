@@ -90,7 +90,7 @@ class User extends Authenticatable
     public function privateMessages()
     {
         return  $this->hasMany(PrivateMessage::class, 'from')
-        ->orWhere('to', '=', $this->id)->orderByDesc('created_at');
+        ->orWhere('to', '=', $this->id)->orderBy('created_at');
     }
     public function groups()
     {
