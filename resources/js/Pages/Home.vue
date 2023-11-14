@@ -56,6 +56,7 @@ watch(
         if (newGroup.id !== null) props.groups.push(newGroup);
     }
 );
+
 watch(
     () => useMessages.userToRemove,
     (userToRemove, old) => {
@@ -66,8 +67,19 @@ watch(
     }
 );
 
+watch(
+    () => useMessagesStore().messages,
+    () => {
+        useMessages.setMessages(props.messages?.map(m => {
+            m.created_at = convertDateToHuman(m.created_at)
+            return m;
+        }));
+    },
+    { deep: true }
+);
+
 onBeforeMount(() => {
-    useMessages.setMessages(props.messages.map(m => {
+    useMessages.setMessages(props.messages?.map(m => {
         m.created_at = convertDateToHuman(m.created_at)
         return m;
     }));
