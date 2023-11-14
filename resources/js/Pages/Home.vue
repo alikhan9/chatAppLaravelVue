@@ -69,12 +69,6 @@ watch(
 
 
 onBeforeMount(() => {
-    // if (props.messages.lenght > 0)
-    //     useMessages.setMessages(props.messages.map(m => {
-    //         m.created_at = convertDateToHuman(m.created_at)
-    //         return m;
-    //     }));
-    // else
     useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;
     useMessages.group = props.groupId;
@@ -88,12 +82,6 @@ function convertDateToHuman(date) {
 watch(
     () => props.messages,
     (newValue, oldValue) => {
-        // if (newValue?.length > 0)
-        //     useMessages.setMessages(newValue.map(m => {
-        //         m.created_at = convertDateToHuman(m.created_at)
-        //         return m;
-        //     }));
-        // else
         useMessages.setMessages(newValue);
     }
 );
@@ -167,11 +155,9 @@ function validateDeleteGroup(id, name) {
         })
         .then((result) => {
             if (result.isConfirmed) {
-                axios.delete("/deleteGroup/" + id).then((response) => {
-                    if (response.data)
-                        initialGroups.value = initialGroups.value.filter(
-                            (g) => g.id != id
-                        );
+                router.delete("/deleteGroup/" + id, {
+                    preserveScroll: true,
+                    preserveState: true,
                 });
             }
         });
@@ -195,6 +181,7 @@ function valideDeleteFriend(id, name) {
             if (result.isConfirmed) {
                 router.delete("/deleteFriend/" + id, {
                     preserveScroll: true,
+                    preserveState: true,
                 });
             }
         });

@@ -7,7 +7,6 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\PrivateMessageController;
 use App\Http\Controllers\PublicMessageController;
-use App\Models\Friend;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +14,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
 
-    if(request()->id !== null && Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0 || request()->group_id !== null && Group::where('id', '=', request()->group_id)->get()->count() == 0) {
+    if(request()->id !== null && (auth()->user()->friends()->where('id', '=', request()->id)->get()->count() == 0) || request()->group_id !== null && Group::where('id', '=', request()->group_id)->get()->count() == 0) {
         return redirect('/');
     }
 
