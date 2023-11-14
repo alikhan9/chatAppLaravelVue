@@ -67,7 +67,10 @@ watch(
 );
 
 onBeforeMount(() => {
-    useMessages.setMessages(props.messages.map(m => m.created_at = convertDateToHuman(m.created_at)));
+    useMessages.setMessages(props.messages.map(m => {
+        m.created_at = convertDateToHuman(m.created_at)
+        return m;
+    }));
     useMessages.toUser = props.toUser;
     useMessages.group = props.groupId;
     useMessages.currentChatId = props.currentChatId;
