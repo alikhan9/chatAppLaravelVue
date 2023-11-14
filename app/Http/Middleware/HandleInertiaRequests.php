@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Request;
+use Inertia\Middleware;
+use Tightenco\Ziggy\Ziggy;
+
+class HandleInertiaRequests extends Middleware
+{
+    /**
+     * The root template that is loaded on the first page visit.
+     *
+     * @var string
+     */
+    protected $rootView = 'app';
+
+    /**
+     * Determine the current asset version.
+     */
+    public function version(Request $request): string|null
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Define the props that are shared by default.
+     *
+     * @return array<string, mixed>
+     */
+    public function share(Request $request): array
+    {
+        $user = $request->user();
+        return array_merge(parent::share($request), [
+            'auth' => [
+                'user' =>  $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'created_at' => $user->created_at->diffForHumans(),
+                ] : null,
+            ],
+            'ziggy' => function () use ($request) {
+                return array_merge((new Ziggy())->toArray(), [
+                    'location' => $request->url(),
+                ]);
+            },
+            'flash' => function () use ($request) {
+                return [
+                    'message' => $request->session()->get('message'),
+                ];
+            },
+            'notifications' => $user ? $user->notifications : null,
+        ]);
+    }
+}
