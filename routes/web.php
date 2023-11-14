@@ -31,10 +31,13 @@ Route::get('/', function () {
         })->toArray();
     }
     if(request()->group_id) {
-        $messages = Group::find(request()->group_id)->messages->map(function ($message) {
-            $message->created_at_human = $message->created_at->diffForHumans();
-            return $message;
-        })->toArray();
+        $group = Group::find(request()->group_id);
+        if($group) {
+            $messages = $group->messages->map(function ($message) {
+                $message->created_at_human = $message->created_at->diffForHumans();
+                return $message;
+            })->toArray();
+        }
     }
 
     $groups = [...auth()->user()->groups,...Group::whereIn(
