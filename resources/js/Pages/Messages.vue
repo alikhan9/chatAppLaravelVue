@@ -13,6 +13,17 @@ let sending = ref(false);
 const container = ref(null);
 
 function sendMessage() {
+    if (props.id == null) {
+        Swal.fire({
+            position: "center",
+            width: 400,
+            icon: "error",
+            text: "First select a group or a user to talk to.",
+            timer: 4000,
+            showConfirmButton: false,
+        });
+        return;
+    }
     if (!sending.value && currentMessage.value != "" && props.id !== null) {
         sending.value = true;
         const options = {
