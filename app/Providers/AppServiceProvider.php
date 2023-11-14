@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+<<<<<<< HEAD
         $this->app['request']->server->set('HTTPS', 'on');
+=======
+        // $this->app['request']->server->set('HTTPS', 'on');
+>>>>>>> 1535753 (e)
     }
 }

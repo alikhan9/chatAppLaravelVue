@@ -4,7 +4,10 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1535753 (e)
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
@@ -25,7 +28,11 @@
     "dependencies": {
         "luxon": "^3.3.0",
         "pinia": "^2.0.33",
+<<<<<<< HEAD
         "sweetalert2": "^11.7.3",
+=======
+        "sweetalert2": "^11.9.0",
+>>>>>>> 1535753 (e)
         "tailwind-scrollbar-hide": "^1.1.7",
         "vue-unicons": "^3.3.1"
     }
