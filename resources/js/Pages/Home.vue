@@ -65,11 +65,15 @@ watch(
 );
 
 onBeforeMount(() => {
-    useMessages.setMessages(props.messages);
+    useMessages.setMessages(props.messages.map(m => m.created_at = convertDateToHuman(m.created_at)));
     useMessages.toUser = props.toUser;
     useMessages.group = props.groupId;
     useMessages.currentChatId = props.currentChatId;
 });
+
+function convertDateToHuman(date) {
+    return DateTime.fromISO(date).toRelative();
+}
 
 watch(
     () => props.messages,

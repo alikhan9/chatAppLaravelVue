@@ -44,13 +44,10 @@ function sendMessage() {
     }
 }
 
-function convertDateToHuman(date) {
-    return DateTime.fromISO(date).toRelative();
-}
+
 
 onMounted(() => {
     scrollToBottom();
-    useMessages.messages.map(m => m.created_at = convertDateToHuman(m.created_at));
 });
 
 const scrollToBottom = () => {
@@ -103,7 +100,7 @@ watch(
                                 'justify-start':
                                     message.from != $page.props.auth.user.id,
                             }">
-                    {{ convertDateToHuman(message.created_at) }}
+                    {{ message.created_at }}
                 </div>
             </div>
         </div>
