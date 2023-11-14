@@ -15,9 +15,8 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
 
-    if(request()->id !== null && Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0) {
+    if(request()->id !== null && Friend::where('user_id', '=', request()->id)->orWhere('friend_id', '=', request()->id)->get()->count() == 0 || request()->group_id !== null && Group::where('id', '=', request()->group_id)->get()->count() == 0) {
         return redirect('/');
-
     }
 
     $messages = [];
