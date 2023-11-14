@@ -19,7 +19,7 @@ function sendMessage() {
             position: "center",
             width: 400,
             icon: "error",
-            text: "First select a group or a user to talk to.",
+            text: "ssFirst select a group or a user to talk to.",
             timer: 4000,
             showConfirmButton: false,
         });
