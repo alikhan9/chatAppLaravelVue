@@ -85,7 +85,7 @@ function convertDateToHuman(date) {
 watch(
     () => props.messages,
     (newValue, oldValue) => {
-        useMessages.setMessages(newValue.map(m => {
+        useMessages.setMessages(newValue?.map(m => {
             m.created_at = convertDateToHuman(m.created_at)
             return m;
         }));
