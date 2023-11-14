@@ -50,6 +50,7 @@ function convertDateToHuman(date) {
 
 onMounted(() => {
     scrollToBottom();
+    useMessages.messages.map(m => m.created_at = convertDateToHuman(m.created_at));
 });
 
 const scrollToBottom = () => {
@@ -107,8 +108,9 @@ watch(
             </div>
         </div>
         <div class="py-5">
-            <input class="w-full bg-gray-300 py-5 px-3 rounded-xl" type="text" placeholder="type your message here..."
-                v-model="currentMessage" @keydown.enter="sendMessage" :disable="!sending" />
+            <input name="message" class="w-full bg-gray-300 py-5 px-3 rounded-xl" type="text"
+                placeholder="type your message here..." v-model="currentMessage" @keydown.enter="sendMessage"
+                :disable="!sending" />
         </div>
     </div>
 </template>
