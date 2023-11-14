@@ -67,16 +67,6 @@ watch(
     }
 );
 
-watch(
-    () => useMessagesStore().messages,
-    () => {
-        useMessages.setMessages(props.messages?.map(m => {
-            m.created_at = convertDateToHuman(m.created_at)
-            return m;
-        }));
-    },
-    { deep: true }
-);
 
 onBeforeMount(() => {
     useMessages.setMessages(props.messages?.map(m => {
@@ -95,7 +85,10 @@ function convertDateToHuman(date) {
 watch(
     () => props.messages,
     (newValue, oldValue) => {
-        useMessages.setMessages(newValue);
+        useMessages.setMessages(newValue.map(m => {
+            m.created_at = convertDateToHuman(m.created_at)
+            return m;
+        }));
     }
 );
 watch(
