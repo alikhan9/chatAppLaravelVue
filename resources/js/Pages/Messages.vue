@@ -2,6 +2,7 @@
 import { useMessagesStore } from "@/Stores/useMessagesStore.js";
 import { ref, watch, onMounted } from "vue";
 import Swal from "sweetalert2";
+import { DateTime } from "luxon";
 
 let props = defineProps({
     id: String,
@@ -36,14 +37,18 @@ function sendMessage() {
         };
 
         axios(options).then((response) => {
-            useMessages.addMessage(response.data);
+            const receivedMessage = response.data;
+            receivedMessage.created_at = convertDateToHuman(receivedMessage.created_at);
+            useMessages.addMessage(receivedMessage);
             currentMessage.value = "";
             sending.value = false;
         });
     }
 }
 
-
+function convertDateToHuman(date) {
+    return DateTime.fromISO(date).toRelative();
+}
 
 onMounted(() => {
     scrollToBottom();
