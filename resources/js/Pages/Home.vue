@@ -12,7 +12,7 @@ import { DateTime } from "luxon";
 let props = defineProps({
     users: Array,
     friends: Array,
-    messages: Array,
+    messages: Object,
     toUser: Boolean,
     currentChatId: String,
     groups: Array,
@@ -69,10 +69,13 @@ watch(
 
 
 onBeforeMount(() => {
-    useMessages.setMessages(props.messages?.map(m => {
-        m.created_at = convertDateToHuman(m.created_at)
-        return m;
-    }));
+    // if (props.messages.lenght > 0)
+    //     useMessages.setMessages(props.messages.map(m => {
+    //         m.created_at = convertDateToHuman(m.created_at)
+    //         return m;
+    //     }));
+    // else
+    useMessages.setMessages(props.messages);
     useMessages.toUser = props.toUser;
     useMessages.group = props.groupId;
     useMessages.currentChatId = props.currentChatId;
@@ -85,10 +88,13 @@ function convertDateToHuman(date) {
 watch(
     () => props.messages,
     (newValue, oldValue) => {
-        useMessages.setMessages(newValue?.map(m => {
-            m.created_at = convertDateToHuman(m.created_at)
-            return m;
-        }));
+        // if (newValue?.length > 0)
+        //     useMessages.setMessages(newValue.map(m => {
+        //         m.created_at = convertDateToHuman(m.created_at)
+        //         return m;
+        //     }));
+        // else
+        useMessages.setMessages(newValue);
     }
 );
 watch(

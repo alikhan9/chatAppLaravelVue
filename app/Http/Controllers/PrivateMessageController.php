@@ -15,6 +15,8 @@ class PrivateMessageController extends Controller
             'message' => request()->message
         ]);
 
+        $privateMessage->created_at_human = $privateMessage->created_at->diffForHumans();
+
         event(new MessageSent($privateMessage));
         return $privateMessage;
     }

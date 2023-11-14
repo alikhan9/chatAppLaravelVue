@@ -15,8 +15,10 @@ class PublicMessageController extends Controller
             'message' => request()->message
         ]);
 
+        $publicMessage->created_at_human = $publicMessage->created_at->diffForHumans();
+
         broadcast(new PublicMessageSent($publicMessage))->toOthers();
-        $user = collect(['user' => ['name'=> auth()->user()->name]]);
+        $user = collect(['user' => ['name' => auth()->user()->name]]);
         $merged = $user->merge($publicMessage);
         $merged->all();
         return $merged;

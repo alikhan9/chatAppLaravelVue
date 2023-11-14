@@ -37,8 +37,7 @@ function sendMessage() {
         };
 
         axios(options).then((response) => {
-            const receivedMessage = response.data;
-            receivedMessage.created_at = convertDateToHuman(receivedMessage.created_at);
+            const receivedMessage= response.data;
             useMessages.addMessage(receivedMessage);
             currentMessage.value = "";
             sending.value = false;
@@ -46,9 +45,7 @@ function sendMessage() {
     }
 }
 
-function convertDateToHuman(date) {
-    return DateTime.fromISO(date).toRelative();
-}
+
 
 onMounted(() => {
     scrollToBottom();
@@ -104,7 +101,7 @@ watch(
                                 'justify-start':
                                     message.from != $page.props.auth.user.id,
                             }">
-                    {{ message.created_at }}
+                    {{ message.created_at_human }}
                 </div>
             </div>
         </div>

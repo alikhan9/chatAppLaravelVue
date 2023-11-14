@@ -9,7 +9,6 @@ use App\Http\Controllers\PrivateMessageController;
 use App\Http\Controllers\PublicMessageController;
 use App\Models\Friend;
 use App\Models\Group;
-use App\Models\GroupMember;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,37 +20,41 @@ Route::get('/', function () {
 
     }
 
-    // if(request()->group_id !== null &&
-    // GroupMember::where('user_id', '=', auth()->user()->id)
-    // ->where('group_id', '=', request()->group_id)
-    // ->orWhereIn('group_id', Group::where('owner', '=', auth()->user()->id)->select('id'))
-    // ->get()->count() == 0) {
-    //     return redirect('/');
-    // }
+    $messages = [];
+
+    if(request()->id) {
+        $messages = auth()->user()->privateMessages->filter(function ($message) {
+            return $message->to == request()->id || $message->from == request()->id;
+        })->map(function ($message) {
+            $message->created_at_human = $message->created_at->diffForHumans();
+            return $message;
+        })->toArray();
+    }
+    if(request()->group_id) {
+        $messages = Group::find(request()->group_id)->messages->map(function ($message) {
+            $message->created_at_human = $message->created_at->diffForHumans();
+            return $message;
+        })->toArray();
+    }
+
+    $groups = [...auth()->user()->groups,...Group::whereIn(
+        'id',
+        function ($query) {
+            $query->select('group_id')
+            ->from('group_members')
+            ->where('user_id', '=', auth()->user()->id)
+            ->get();
+        }
+    )->get()];
+
 
     return Inertia::render(
         'Home',
         [
             'friends' => auth()->user()->friends,
-            'messages' => request()->id ?
-                auth()->user()->privateMessages->filter(function ($message) {
-                    return $message->to == request()->id || $message->from == request()->id;
-                })
-            : (
-                request()->group_id ?
-                Group::find(request()->group_id)?->messages
-                : []
-            ),
+            'messages' => $messages,
             'currentChatId' => request()->id ? request()->id : request()->group_id,
-            'groups' => [...auth()->user()->groups,...Group::whereIn(
-                'id',
-                function ($query) {
-                    $query->select('group_id')
-                    ->from('group_members')
-                    ->where('user_id', '=', auth()->user()->id)
-                    ->get();
-                }
-            )->get()],
+            'groups' => $groups,
             'toUser' => request()->id ? true : false,
             'groupId' => request()->group_id
         ]
